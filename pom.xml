@@ -5,11 +5,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.kx</groupId>
-  <artifactId>jdbc</artifactId>
+  <artifactId>JdbcModules</artifactId>
+  <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
 
-  <name>JDBC_KDB</name>
+  <name>JDBC_KDB_MULTI</name>
   <description>JDBC client for kdb+</description>
   <url>https://github.com/KxSystems/jdbc</url>
 
@@ -43,72 +43,9 @@
     <maven.compiler.target>${java.version}</maven.compiler.target>
   </properties>
 
-  <dependencies>
-   <dependency>
-      <groupId>com.kx.javakdb</groupId>
-      <artifactId>javakdb</artifactId>
-      <version>1.0</version>
-      <scope>compile</scope>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <plugins>
-
-      <!-- Java Compiler -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
-        <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-          <compilerArgs>
-            <arg>-Xlint:deprecation</arg>
-          </compilerArgs>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.2.0</version>
-        <configuration>
-          <source>8</source>
-          <quiet>true</quiet>
-        </configuration>
-     </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>3.2.1</version>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-        </configuration>
-      </plugin>
-
-      </plugins>
-  </build>
+  <modules>
+    <module>jdbc</module>
+    <module>jdbc-example</module>
+  </modules>
 
  </project>

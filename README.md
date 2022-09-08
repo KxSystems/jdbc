@@ -26,3 +26,16 @@ If you wish to deploy the library to your machines local repository, in order to
 `mvn clean install`
 
 Please refer to the [Apache Maven documentation](https://maven.apache.org/guides/index.html) for further details
+
+## Code Example
+
+The following describes each with an example of how to run from Maven (note: Maven is not required to run the applications, but used here for convenience. 
+
+The example remotely creates a table 't', then queries KDB+ for its contents, which it then displays its columns/data to the console
+
+`mvn clean install` should be performed prior to running.
+
+The jdbc driver passes the q or sql text to the server. For SQL support you should take the ps.k file from the odbc3 zip file [here](https://code.kx.com/v2/interfaces/q-server-for-odbc3/)
+and ensure that is loaded into your kdb+ process. ps.k is the sql transpiler or enquire about SQL support with KX Insights. The example requires KDB+ to be listening on TCP port 5001
+
+```mvn exec:java -pl jdbc-example -Dexec.mainClass="test"```
