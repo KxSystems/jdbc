@@ -15,7 +15,10 @@
 //jar cf jdbc.jar *.class   url(jdbc:q:host:port) isql(new service resources jdbc.jar)
 //javac -Xbootclasspath:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar -target 1.6 -source 1.6 jdbc.java 
 import kx.*;import java.io.*;import java.math.*;import java.sql.*;import java.net.URL;import java.util.Calendar;import java.util.Map;import java.util.Properties;import java.util.logging.Logger;import java.util.concurrent.Executor;
-public class jdbc implements Driver{static int V=2,v=0;static void O(String s){System.out.println(s);}
+public class jdbc implements Driver{
+static int V=2;
+static int v=0;
+static void O(String s){System.out.println(s);}
 public int getMajorVersion(){return V;}public int getMinorVersion(){return v;}public boolean jdbcCompliant(){return false;}
 public boolean acceptsURL(String s){return s.startsWith("jdbc:q:");}
 public Connection connect(String s,Properties p)throws SQLException{return!acceptsURL(s)?null:new co(s.substring(7),p!=null?p.get("user"):p,p!=null?p.get("password"):p);}
@@ -28,8 +31,13 @@ static int find(int[]x,int j){int i=0;for(;i<x.length&&x[i]!=j;)++i;return i;}
 static void q(String s)throws SQLException{throw new SQLException(s);}static void q()throws SQLException{throw new SQLFeatureNotSupportedException("nyi");}
 static void q(Exception e)throws SQLException{throw new SQLException(e.getMessage());}
 
-public class co implements Connection{private boolean streaming;private c c;public co(String s,Object u,Object p)throws SQLException{int i=s.indexOf(":");
- try{c=new c(s.substring(0,i),Integer.parseInt(s.substring(i+1)),u==null?"":(String)u+":"+(String)p);c.setCollectResponseAsync(true);}catch(Exception e){q(e);}}
+public class co implements Connection{
+ private boolean streaming;
+ private c c;
+ public co(String s,Object u,Object p)throws SQLException{
+   int idx=s.indexOf(":");
+   try{c=new c(s.substring(0,idx),Integer.parseInt(s.substring(idx+1)),u==null?"":(String)u+":"+(String)p);c.setCollectResponseAsync(true);}catch(Exception e){q(e);}
+ }
  public Object getMoreRows()throws SQLException{
    try{
      if(streaming){
@@ -48,7 +56,7 @@ public class co implements Connection{private boolean streaming;private c c;publ
    if(streaming)
      throw new SQLException("A ResultSet is still open on this connection with messages queued from the server");
    try{
-     boolean args=0<c.n(p);
+     boolean args=0<kx.c.n(p);
      String lambda="{[maxRows;fetchSize;fn;args]$[not .Q.qt r:value[fn]args;::;count r:select[maxRows]from 0!r;{neg[.z.w]@/:-1_x;last x}(0N;fetchSize)#r;r]}["+(maxRows>0?maxRows:Integer.MAX_VALUE)+";"+(fetchSize>0?fetchSize:Integer.MAX_VALUE)+"]";
      if(args)
        c.k(lambda,s.toCharArray(),p);
@@ -71,7 +79,9 @@ public class co implements Connection{private boolean streaming;private c c;publ
  public PreparedStatement prepareStatement(String s)throws SQLException{return new ps(this,s);}
  public CallableStatement prepareCall(String s)throws SQLException{return new cs(this,s);}
  public String nativeSQL(String s)throws SQLException{return s;}
- private boolean b;private int i=TRANSACTION_SERIALIZABLE,h=ResultSet.HOLD_CURSORS_OVER_COMMIT;
+ private boolean b;
+ private int i=TRANSACTION_SERIALIZABLE;
+ private int h=ResultSet.HOLD_CURSORS_OVER_COMMIT;
  public void setReadOnly(boolean x)throws SQLException{b=x;}public boolean isReadOnly()throws SQLException{return b;}
  public void setCatalog(String s)throws SQLException{q("setCatalog not supported");}
  public String getCatalog()throws SQLException{q("getCatalog not supported");return null;}
@@ -83,7 +93,7 @@ public class co implements Connection{private boolean streaming;private c c;publ
  public Statement createStatement(int resultSetType,int resultSetConcurrency)throws SQLException{return new st(this);}
  public PreparedStatement prepareStatement(String s,int resultSetType,int resultSetConcurrency)throws SQLException{return new ps(this,s);}
  public CallableStatement prepareCall(String s,int resultSetType,int resultSetConcurrency)throws SQLException{return new cs(this,s);}
- public Map getTypeMap()throws SQLException{return null;}
+ public Map<String, Class<?>> getTypeMap()throws SQLException{return null;}
  public void setTypeMap(Map map)throws SQLException{}
 //3
  public void setHoldability(int holdability)throws SQLException{h=holdability;}
@@ -121,8 +131,14 @@ public class co implements Connection{private boolean streaming;private c c;publ
  public String getSchema(){return null;}
 }
 
-public class st implements Statement{private co co;private ResultSet resultSet;private int maxRows=0,T,fetchSize=0;
- protected Object[]p={};public st(co x){co=x;}
+public class st implements Statement{
+ private co co;
+ private ResultSet resultSet;
+ private int maxRows=0;
+ private int T;
+ private int fetchSize=0;
+ protected Object[]p={};
+ public st(co x){co=x;}
  public int executeUpdate(String s)throws SQLException{
    if(resultSet!=null)resultSet.close();resultSet=null;
    Object[]nrsTuple=co.ex(s,p,maxRows,fetchSize);
@@ -200,7 +216,7 @@ public class ps extends st implements PreparedStatement{private String s;public 
  public void setDate(int i,Date x)throws SQLException{setObject(i,x);}
  public void setTime(int i,Time x)throws SQLException{setObject(i,x);}
  public void setTimestamp(int i,Timestamp x)throws SQLException{setObject(i,x);}
- public void setBytes(int i,byte x[])throws SQLException{q();}
+ public void setBytes(int i,byte[] x)throws SQLException{q();}
  public void setBigDecimal(int i,BigDecimal x)throws SQLException{q();}
  public void setAsciiStream(int i,InputStream x,int length)throws SQLException{q();}
  @Deprecated
@@ -365,12 +381,13 @@ public class cs extends ps implements CallableStatement{
 public class rs implements ResultSet{
  private st st;
  private String[]f;
- private Object o,d[];
+ private Object o;
+ private Object[] d;
  private boolean streamed;
  private boolean endOfStream;
-private int r, // cursor position
-             n, // number of rows in the current chunk
-             offset; // first absolute row number for this chunk
+ private int r; // cursor position
+ private int n; // number of rows in the current chunk
+ private int offset; // first absolute row number for this chunk
  public rs(st s,Object[]nrsTuple)throws SQLException{
    st=s;
    init(nrsTuple[1]);
@@ -415,7 +432,7 @@ private int r, // cursor position
  public String getString(int i)throws SQLException{Object x=getObject(i);return x==null?null:x.toString();}
  public Date getDate(int i)throws SQLException{return(Date)getObject(i);}
  public Time getTime(int i)throws SQLException{return(Time)getObject(i);}
- public Timestamp getTimestamp(int i)throws SQLException{Object o=getObject(i);return o instanceof java.util.Date?new Timestamp(((java.util.Date)o).getTime()):(Timestamp)o;}
+ public Timestamp getTimestamp(int i)throws SQLException{Object obj=getObject(i);return obj instanceof java.util.Date?new Timestamp(((java.util.Date)obj).getTime()):(Timestamp)obj;}
  public byte[]getBytes(int i)throws SQLException{q();return null;}
  @Deprecated
  public BigDecimal getBigDecimal(int i,int scale)throws SQLException{q();return null;}
@@ -435,7 +452,7 @@ private int r, // cursor position
  public Date getDate(String s)throws SQLException{return getDate(findColumn(s));}
  public Time getTime(String s)throws SQLException{return getTime(findColumn(s));}
  public Timestamp getTimestamp(String s)throws SQLException{return getTimestamp(findColumn(s));}
- public byte[]getBytes(String s)throws SQLException{return getBytes(findColumn(s));}
+ public byte[] getBytes(String s)throws SQLException{return getBytes(findColumn(s));}
  @Deprecated
  public BigDecimal getBigDecimal(String s,int scale)throws SQLException{return getBigDecimal(findColumn(s),scale);}
  public InputStream getAsciiStream(String s)throws SQLException{return getAsciiStream(findColumn(s));}
@@ -450,9 +467,9 @@ private int r, // cursor position
  public BigDecimal getBigDecimal(int columnIndex)throws SQLException{q();return null;}
  public BigDecimal getBigDecimal(String columnName)throws SQLException{q();return null;}
  public boolean isBeforeFirst()throws SQLException{return r<0;}
- public boolean isAfterLast()throws SQLException{if(streamed)q("beforeFirst not supported on a streamed ResultSet");return r>=n;}
+ public boolean isAfterLast()throws SQLException{if(streamed)q("isAfterLast not supported on a streamed ResultSet");return r>=n;}
  public boolean isFirst()throws SQLException{return r==0;}
- public boolean isLast()throws SQLException{if(streamed)q("beforeFirst not supported on a streamed ResultSet");return r==n-1;}
+ public boolean isLast()throws SQLException{if(streamed)q("isLast not supported on a streamed ResultSet");return r==n-1;}
  public void beforeFirst()throws SQLException{if(streamed)q("beforeFirst not supported on a streamed ResultSet");r=-1;}
  public void afterLast()throws SQLException{if(streamed)q("afterLast not supported on a streamed ResultSet");r=n;}
  public boolean first()throws SQLException{if(streamed)q("first not supported on a streamed ResultSet");r=0;return n>0;}
@@ -598,7 +615,9 @@ private int r, // cursor position
  public <T>T getObject(int columnIndex,Class<T>t)throws SQLFeatureNotSupportedException{throw new SQLFeatureNotSupportedException("nyi");}
 }
 
-public class rm implements ResultSetMetaData{private String[]f;private Object[]d;
+public class rm implements ResultSetMetaData{
+ private String[]f;
+ private Object[]d;
  public rm(String[]x,Object[]y){f=x;d=y;}
  public int getColumnCount()throws SQLException{return f.length;}
  public String getColumnName(int i)throws SQLException{return f[i-1];}
@@ -630,7 +649,7 @@ public class dm implements DatabaseMetaData{private co co;public dm(co x){co=x;}
  public ResultSet getCatalogs()throws SQLException{return co.qx("([]TABLE_CAT:`symbol$())");}
  public ResultSet getSchemas()throws SQLException{return co.qx("([]TABLE_SCHEM:`symbol$())");}
  public ResultSet getTableTypes()throws SQLException{return co.qx("([]TABLE_TYPE:`TABLE`VIEW)");}
- public ResultSet getTables(String a,String b,String t,String x[])throws SQLException{return co.qx(
+ public ResultSet getTables(String a,String b,String t,String[] x)throws SQLException{return co.qx(
   "raze{([]TABLE_CAT:`;TABLE_SCHEM:`;TABLE_NAME:system string`a`b x=`VIEW;TABLE_TYPE:x)}each",x);}
  public ResultSet getTypeInfo()throws SQLException{return co.qx(
   "`DATA_TYPE xasc([]TYPE_NAME:`boolean`byte`short`int`long`real`float`symbol`date`time`timestamp;DATA_TYPE:16 -2 5 4 -5 7 8 12 91 92 93i;PRECISION:11i;LITERAL_PREFIX:`;LITERAL_SUFFIX:`;CREATE_PARAMS:`;NULLABLE:1h;CASE_SENSITIVE:1b;SEARCHABLE:1h;UNSIGNED_ATTRIBUTE:0b;FIXED_PREC_SCALE:0b;AUTO_INCREMENT:0b;LOCAL_TYPE_NAME:`;MINIMUM_SCALE:0h;MAXIMUM_SCALE:0h;SQL_DATA_TYPE:0i;SQL_DATETIME_SUB:0i;NUM_PREC_RADIX:10i)");}
