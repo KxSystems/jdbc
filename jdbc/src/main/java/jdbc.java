@@ -14,12 +14,24 @@
 //2007.04.20 c.java sql.date/time/timestamp
 //jar cf jdbc.jar *.class   url(jdbc:q:host:port) isql(new service resources jdbc.jar)
 //javac -Xbootclasspath:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar -target 1.6 -source 1.6 jdbc.java 
-import kx.*;import java.io.*;import java.math.*;import java.sql.*;import java.net.URL;import java.util.Calendar;import java.util.Map;import java.util.Properties;import java.util.logging.Logger;import java.util.concurrent.Executor;
+import kx.*;
+import java.io.*;
+import java.math.*;
+import java.sql.*;
+import java.net.URL;
+import java.util.Calendar;
+import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Logger;
+import java.util.concurrent.Executor;
+
 public class jdbc implements Driver{
 static int V=2;
 static int v=0;
 static void O(String s){System.out.println(s);}
-public int getMajorVersion(){return V;}public int getMinorVersion(){return v;}public boolean jdbcCompliant(){return false;}
+public int getMajorVersion(){return V;}
+public int getMinorVersion(){return v;}
+public boolean jdbcCompliant(){return false;}
 public boolean acceptsURL(String s){return s.startsWith("jdbc:q:");}
 public Connection connect(String s,Properties p)throws SQLException{return!acceptsURL(s)?null:new co(s.substring(7),p!=null?p.get("user"):p,p!=null?p.get("password"):p);}
 public DriverPropertyInfo[]getPropertyInfo(String s,Properties p)throws SQLException{return new DriverPropertyInfo[0];}
@@ -28,7 +40,8 @@ static int[]SQLTYPE={0,16,0,0,-2,5,4,-5,7,8,0,12,0,0,91,93,0,0,0,92};
 static String[]TYPE={"","boolean","","","byte","short","int","long","real","float","char","symbol","","month","date","timestamp","","minute","second","time"};
 static int find(String[]x,String s){int i=0;for(;i<x.length&&!s.equals(x[i]);)++i;return i;}
 static int find(int[]x,int j){int i=0;for(;i<x.length&&x[i]!=j;)++i;return i;}
-static void q(String s)throws SQLException{throw new SQLException(s);}static void q()throws SQLException{throw new SQLFeatureNotSupportedException("nyi");}
+static void q(String s)throws SQLException{throw new SQLException(s);}
+static void q()throws SQLException{throw new SQLFeatureNotSupportedException("nyi");}
 static void q(Exception e)throws SQLException{throw new SQLException(e.getMessage());}
 
 public class co implements Connection{
@@ -36,7 +49,12 @@ public class co implements Connection{
  private c c;
  public co(String s,Object u,Object p)throws SQLException{
    int idx=s.indexOf(":");
-   try{c=new c(s.substring(0,idx),Integer.parseInt(s.substring(idx+1)),u==null?"":(String)u+":"+(String)p);c.setCollectResponseAsync(true);}catch(Exception e){q(e);}
+   try{
+    c=new c(s.substring(0,idx),Integer.parseInt(s.substring(idx+1)),u==null?"":(String)u+":"+(String)p);
+    c.setCollectResponseAsync(true);
+   }catch(Exception e){
+    q(e);
+   }
  }
  public Object getMoreRows()throws SQLException{
    try{
@@ -71,8 +89,11 @@ public class co implements Connection{
  }
  public rs qx(String s)throws SQLException{try{c.k(s);return new rs(null,new Object[]{Boolean.FALSE,c.readMsg()[1]});}catch(Exception e){q(e);return null;}}
  public rs qx(String s,Object x)throws SQLException{try{c.k(s,x);return new rs(null,new Object[]{Boolean.FALSE,c.readMsg()[1]});}catch(Exception e){q(e);return null;}}
- private boolean a=true;public void setAutoCommit(boolean b)throws SQLException{a=b;}public boolean getAutoCommit()throws SQLException{return a;}
- public void rollback()throws SQLException{}public void commit()throws SQLException{}
+ private boolean a=true;
+ public void setAutoCommit(boolean b)throws SQLException{a=b;}
+ public boolean getAutoCommit()throws SQLException{return a;}
+ public void rollback()throws SQLException{}
+ public void commit()throws SQLException{}
  public boolean isClosed()throws SQLException{return c==null;}
  public Statement createStatement()throws SQLException{return new st(this);}
  public DatabaseMetaData getMetaData()throws SQLException{return new dm(this);}
@@ -82,7 +103,8 @@ public class co implements Connection{
  private boolean b;
  private int i=TRANSACTION_SERIALIZABLE;
  private int h=ResultSet.HOLD_CURSORS_OVER_COMMIT;
- public void setReadOnly(boolean x)throws SQLException{b=x;}public boolean isReadOnly()throws SQLException{return b;}
+ public void setReadOnly(boolean x)throws SQLException{b=x;}
+ public boolean isReadOnly()throws SQLException{return b;}
  public void setCatalog(String s)throws SQLException{q("setCatalog not supported");}
  public String getCatalog()throws SQLException{q("getCatalog not supported");return null;}
  public void setTransactionIsolation(int x)throws SQLException{i=x;}
@@ -146,30 +168,47 @@ public class st implements Statement{
    return 0;}
  public ResultSet executeQuery(String s)throws SQLException{if(!execute(s))q("Statement did not produce a ResultSet");return getResultSet();}
  public boolean execute(String s)throws SQLException{
-   if(resultSet!=null)resultSet.close();resultSet=null;
+   if(resultSet!=null)
+     resultSet.close();
+   resultSet=null;
    Object[]nrsTuple=co.ex(s,p,maxRows,fetchSize); // get tuple of {streaming,first chunk of results}
    if(nrsTuple[1] instanceof c.Flip)
      resultSet=new rs(this,nrsTuple);
    return resultSet!=null;}
- public ResultSet getResultSet()throws SQLException{return resultSet;}public int getUpdateCount(){return -1;}
- public int getMaxRows()throws SQLException{return maxRows;}public void setMaxRows(int n)throws SQLException{if(n<0)q("setMaxRows(int), rows must be >=0. Passed "+n);maxRows=n;}
- public int getQueryTimeout()throws SQLException{return T;}public void setQueryTimeout(int i)throws SQLException{T=i;}
+ public ResultSet getResultSet()throws SQLException{return resultSet;}
+ public int getUpdateCount(){return -1;}
+ public int getMaxRows()throws SQLException{return maxRows;}
+ public void setMaxRows(int n)throws SQLException{if(n<0)q("setMaxRows(int), rows must be >=0. Passed "+n);maxRows=n;}
+ public int getQueryTimeout()throws SQLException{return T;}
+ public void setQueryTimeout(int i)throws SQLException{T=i;}
  // truncate excess BINARY,VARBINARY,LONGVARBINARY,CHAR,VARCHAR,and LONGVARCHAR fields
- public int getMaxFieldSize()throws SQLException{return 0;}public void setMaxFieldSize(int i)throws SQLException{}
+ public int getMaxFieldSize()throws SQLException{return 0;}
+ public void setMaxFieldSize(int i)throws SQLException{}
  public void setEscapeProcessing(boolean b)throws SQLException{}
  public void cancel()throws SQLException{}
- public SQLWarning getWarnings()throws SQLException{return null;}public void clearWarnings()throws SQLException{}
+ public SQLWarning getWarnings()throws SQLException{return null;}
+ public void clearWarnings()throws SQLException{}
  // positioned update? different statement?
  public void setCursorName(String name)throws SQLException{q("setCursorName not supported");}
  public boolean getMoreResults()throws SQLException{return false;}
- public void close()throws SQLException{if(resultSet!=null)resultSet.close();resultSet=null;co=null;}
+ public void close()throws SQLException{
+  if(resultSet!=null)
+    resultSet.close();
+  resultSet=null;
+  co=null;
+ }
  public void setFetchDirection(int direction)throws SQLException{q("setFetchDirection not supported");}
  public int getFetchDirection()throws SQLException{return 0;}
- public void setFetchSize(int rows)throws SQLException{if(fetchSize<0)throw new SQLException("setFetchSize(rows), rows must be >=0. Passed"+fetchSize);fetchSize=rows;}
+ public void setFetchSize(int rows)throws SQLException{
+  if(fetchSize<0)
+    throw new SQLException("setFetchSize(rows), rows must be >=0. Passed"+fetchSize);
+  fetchSize=rows;
+ }
  public int getFetchSize()throws SQLException{return fetchSize;}
  public int getResultSetConcurrency()throws SQLException{return ResultSet.CONCUR_READ_ONLY;}
  public int getResultSetType()throws SQLException{return ResultSet.TYPE_SCROLL_INSENSITIVE;}
- public void addBatch(String sql)throws SQLException{q("addBatch not supported");}public void clearBatch()throws SQLException{}
+ public void addBatch(String sql)throws SQLException{q("addBatch not supported");}
+ public void clearBatch()throws SQLException{}
  public int[]executeBatch()throws SQLException{return new int[0];}
  public Connection getConnection()throws SQLException{return co;}
 //3
@@ -185,8 +224,16 @@ public class st implements Statement{
 //4
  boolean poolable=false;
  public boolean isClosed()throws SQLException{return co==null||co.isClosed();}
- public void setPoolable(boolean b)throws SQLException{if(isClosed())throw new SQLException("Closed");poolable=b;}
- public boolean isPoolable()throws SQLException{if(isClosed())throw new SQLException("Closed");return poolable;}
+ public void setPoolable(boolean b)throws SQLException{
+  if(isClosed())
+    throw new SQLException("Closed");
+  poolable=b;
+ }
+ public boolean isPoolable()throws SQLException{
+  if(isClosed())
+    throw new SQLException("Closed");
+  return poolable;
+ }
  public <T> T unwrap(Class<T> type)throws SQLException{q();return null;}
  public boolean isWrapperFor(Class<?> type)throws SQLException{q();return false;}
 //1.7
@@ -195,13 +242,27 @@ public class st implements Statement{
  public boolean isCloseOnCompletion(){return _closeOnCompletion;}
 }
 
-public class ps extends st implements PreparedStatement{private String s;public ps(co co,String x){super(co);s=x;}
+public class ps extends st implements PreparedStatement{
+ private String s;
+ public ps(co co,String x){super(co);s=x;}
  public ResultSet executeQuery()throws SQLException{return executeQuery(s);}
  public int executeUpdate()throws SQLException{return executeUpdate(s);}
  public boolean execute()throws SQLException{return execute(s);}
  public void clearParameters()throws SQLException{try{for(int i=0;i<c.n(p);)p[i++]=null;}catch(UnsupportedEncodingException ex){throw new SQLException(ex);}}
- public void setObject(int i,Object x)throws SQLException{int n;try{n=c.n(p);}catch(UnsupportedEncodingException ex){throw new SQLException(ex);}
-  if(i>n){Object[]r=new Object[i];System.arraycopy(p,0,r,0,n);p=r;for(;n<i;)p[n++]=null;}p[i-1]=x;}
+ public void setObject(int i,Object x)throws SQLException{
+  int n;
+  try{n=c.n(p);
+  }catch(UnsupportedEncodingException ex){
+    throw new SQLException(ex);
+  }
+  if(i>n){
+    Object[]r=new Object[i];
+    System.arraycopy(p,0,r,0,n);
+    p=r;
+    for(;n<i;)p[n++]=null;
+  }
+  p[i-1]=x;
+ }
  public void setObject(int i,Object x,int targetSqlType)throws SQLException{setObject(i,x);}
  public void setObject(int i,Object x,int targetSqlType,int scale)throws SQLException{setObject(i,x);}
  public void setNull(int i,int t)throws SQLException{setObject(i,c.NULL[find(SQLTYPE,t)]);}
@@ -421,7 +482,10 @@ public class rs implements ResultSet{
    if(r+1<offset+n){r++;return true;}else return false;
 }
  public boolean wasNull()throws SQLException{return o==null;}
- public Object getObject(int i)throws SQLException{o=c.at(d[i-1],r-offset);return o instanceof char[]?new String((char[])o):o;}  
+ public Object getObject(int i)throws SQLException{
+  o=c.at(d[i-1],r-offset);
+  return o instanceof char[]?new String((char[])o):o;
+ }  
  public boolean getBoolean(int i)throws SQLException{return((Boolean)getObject(i)).booleanValue();}
  public byte getByte(int i)throws SQLException{return((Byte)getObject(i)).byteValue();}
  public short getShort(int i)throws SQLException{Object x=getObject(i);return x==null?0:((Short)x).shortValue();}
