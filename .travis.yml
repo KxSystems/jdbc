@@ -14,4 +14,4 @@ before_install:
     - mvn install
     - cd ..
 script:
-    - mvn clean verify sonar:sonar -Dsonar.projectKey=KxSystems_jdbc
+    - mvn clean verify
