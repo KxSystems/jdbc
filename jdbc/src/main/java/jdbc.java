@@ -38,8 +38,16 @@ public DriverPropertyInfo[]getPropertyInfo(String s,Properties p)throws SQLExcep
 static{try{DriverManager.registerDriver(new jdbc());}catch(Exception e){O(e.getMessage());}}
 static int[]SQLTYPE={0,16,0,0,-2,5,4,-5,7,8,0,12,0,0,91,93,0,0,0,92};
 static String[]TYPE={"","boolean","","","byte","short","int","long","real","float","char","symbol","","month","date","timestamp","","minute","second","time"};
-static int find(String[]x,String s){int i=0;for(;i<x.length&&!s.equals(x[i]);)++i;return i;}
-static int find(int[]x,int j){int i=0;for(;i<x.length&&x[i]!=j;)++i;return i;}
+static int find(String[]x,String s){
+  int i=0;
+  while(i<x.length&&!s.equals(x[i]))++i;
+  return i;
+}
+static int find(int[]x,int j){
+  int i=0;
+  while(i<x.length&&x[i]!=j)++i;
+  return i;
+}
 static void q(String s)throws SQLException{throw new SQLException(s);}
 static void q()throws SQLException{throw new SQLFeatureNotSupportedException("nyi");}
 static void q(Exception e)throws SQLException{throw new SQLException(e.getMessage());}
@@ -111,7 +119,17 @@ public class co implements Connection{
  public int getTransactionIsolation()throws SQLException{return i;}
  public SQLWarning getWarnings()throws SQLException{return null;}
  public void clearWarnings()throws SQLException{}
- public void close()throws SQLException{if(isClosed())return;try{c.close();}catch(IOException e){q(e);}finally{c=null;}}
+ public void close()throws SQLException{
+   if(isClosed())
+     return;
+   try{
+     c.close();
+   }catch(IOException e){
+     q(e);
+   }finally{
+     c=null;
+   }
+ }
  public Statement createStatement(int resultSetType,int resultSetConcurrency)throws SQLException{return new st(this);}
  public PreparedStatement prepareStatement(String s,int resultSetType,int resultSetConcurrency)throws SQLException{return new ps(this,s);}
  public CallableStatement prepareCall(String s,int resultSetType,int resultSetConcurrency)throws SQLException{return new cs(this,s);}
@@ -136,7 +154,10 @@ public class co implements Connection{
  public Blob createBlob()throws SQLException{q();return null;}
  public NClob createNClob()throws SQLException{q();return null;}
  public SQLXML createSQLXML()throws SQLException{q();return null;}
- public boolean isValid(int i)throws SQLException{if(i<0)q();return c!=null;}
+ public boolean isValid(int i)throws SQLException{
+   if(i<0)q();
+   return c!=null;
+ }
  public void setClientInfo(String k, String v)throws SQLClientInfoException{clientInfo.setProperty(k,v);}
  public void setClientInfo(Properties p)throws SQLClientInfoException{clientInfo=p;}
  public String getClientInfo(String k)throws SQLException{return (String)clientInfo.get(k);}
@@ -157,30 +178,40 @@ public class st implements Statement{
  private co co;
  private ResultSet resultSet;
  private int maxRows=0;
- private int T;
+ private int timeOut;
  private int fetchSize=0;
  protected Object[]p={};
  public st(co x){co=x;}
  public int executeUpdate(String s)throws SQLException{
-   if(resultSet!=null)resultSet.close();resultSet=null;
+   if(resultSet!=null)
+    resultSet.close();
+   resultSet=null;
    Object[]nrsTuple=co.ex(s,p,maxRows,fetchSize);
-   if(nrsTuple[1] instanceof c.Flip)q("Statement produced a ResultSet");
+   if(nrsTuple[1] instanceof c.Flip)
+    q("Statement produced a ResultSet");
    return 0;}
- public ResultSet executeQuery(String s)throws SQLException{if(!execute(s))q("Statement did not produce a ResultSet");return getResultSet();}
+ public ResultSet executeQuery(String s)throws SQLException{
+   if(!execute(s))q("Statement did not produce a ResultSet");
+   return getResultSet();
+ }
  public boolean execute(String s)throws SQLException{
    if(resultSet!=null)
      resultSet.close();
    resultSet=null;
-   Object[]nrsTuple=co.ex(s,p,maxRows,fetchSize); // get tuple of {streaming,first chunk of results}
+   Object[]nrsTuple=co.ex(s,p,maxRows,fetchSize); // get tuple of (streaming,first chunk of results)
    if(nrsTuple[1] instanceof c.Flip)
      resultSet=new rs(this,nrsTuple);
    return resultSet!=null;}
  public ResultSet getResultSet()throws SQLException{return resultSet;}
  public int getUpdateCount(){return -1;}
  public int getMaxRows()throws SQLException{return maxRows;}
- public void setMaxRows(int n)throws SQLException{if(n<0)q("setMaxRows(int), rows must be >=0. Passed "+n);maxRows=n;}
- public int getQueryTimeout()throws SQLException{return T;}
- public void setQueryTimeout(int i)throws SQLException{T=i;}
+ public void setMaxRows(int n)throws SQLException{
+   if(n<0)
+     q("setMaxRows(int), rows must be >=0. Passed "+n);
+   maxRows=n;
+ }
+ public int getQueryTimeout()throws SQLException{return timeOut;}
+ public void setQueryTimeout(int i)throws SQLException{timeOut=i;}
  // truncate excess BINARY,VARBINARY,LONGVARBINARY,CHAR,VARCHAR,and LONGVARCHAR fields
  public int getMaxFieldSize()throws SQLException{return 0;}
  public void setMaxFieldSize(int i)throws SQLException{}
@@ -468,16 +499,14 @@ public class rs implements ResultSet{
  public ResultSetMetaData getMetaData()throws SQLException{return new rm(f,d);}
  public int findColumn(String s)throws SQLException{return 1+find(f,s);}
  public boolean next()throws SQLException{
-   if(r+1>=offset+n&&streamed&&!endOfStream){
-     if(st!=null){ //qx() doesn't register an enclosing statement
-       Object x=st.co.getMoreRows();
-       if(x!=null){
-         offset+=n;
-         init(x);
-       }
-       else
-         endOfStream=true;
+   if(r+1>=offset+n&&streamed&&!endOfStream&&st!=null){
+     Object x=st.co.getMoreRows();
+     if(x!=null){
+       offset+=n;
+       init(x);
      }
+     else
+       endOfStream=true;
    }
    if(r+1<offset+n){r++;return true;}else return false;
 }
@@ -523,7 +552,8 @@ public class rs implements ResultSet{
  @Deprecated
  public InputStream getUnicodeStream(String s)throws SQLException{return getUnicodeStream(findColumn(s));}
  public InputStream getBinaryStream(String s)throws SQLException{return getBinaryStream(findColumn(s));}
- public SQLWarning getWarnings()throws SQLException{return null;}public void clearWarnings()throws SQLException{}
+ public SQLWarning getWarnings()throws SQLException{return null;}
+ public void clearWarnings()throws SQLException{}
  public String getCursorName()throws SQLException{q("getCursorName not supported");return"";}
  public void close()throws SQLException{d=null;if(st!=null)while(null!=st.co.getMoreRows());}// drain remaining streamed messages
  public Reader getCharacterStream(int columnIndex)throws SQLException{q();return null;}
@@ -531,17 +561,49 @@ public class rs implements ResultSet{
  public BigDecimal getBigDecimal(int columnIndex)throws SQLException{q();return null;}
  public BigDecimal getBigDecimal(String columnName)throws SQLException{q();return null;}
  public boolean isBeforeFirst()throws SQLException{return r<0;}
- public boolean isAfterLast()throws SQLException{if(streamed)q("isAfterLast not supported on a streamed ResultSet");return r>=n;}
+ public boolean isAfterLast()throws SQLException{
+   if(streamed)q("isAfterLast not supported on a streamed ResultSet");
+   return r>=n;
+ }
  public boolean isFirst()throws SQLException{return r==0;}
- public boolean isLast()throws SQLException{if(streamed)q("isLast not supported on a streamed ResultSet");return r==n-1;}
- public void beforeFirst()throws SQLException{if(streamed)q("beforeFirst not supported on a streamed ResultSet");r=-1;}
- public void afterLast()throws SQLException{if(streamed)q("afterLast not supported on a streamed ResultSet");r=n;}
- public boolean first()throws SQLException{if(streamed)q("first not supported on a streamed ResultSet");r=0;return n>0;}
- public boolean last()throws SQLException{if(streamed)q("last not supported on a streamed ResultSet");r=n-1;return n>0;}
+ public boolean isLast()throws SQLException{
+   if(streamed)q("isLast not supported on a streamed ResultSet");
+   return r==n-1;
+ }
+ public void beforeFirst()throws SQLException{
+   if(streamed)q("beforeFirst not supported on a streamed ResultSet");
+   r=-1;
+ }
+ public void afterLast()throws SQLException{
+   if(streamed)q("afterLast not supported on a streamed ResultSet");
+   r=n;
+ }
+ public boolean first()throws SQLException{
+   if(streamed)q("first not supported on a streamed ResultSet");
+   r=0;
+   return n>0;
+ }
+ public boolean last()throws SQLException{
+   if(streamed)q("last not supported on a streamed ResultSet");
+   r=n-1;
+   return n>0;
+ }
  public int getRow()throws SQLException{return r+1;}
- public boolean absolute(int row)throws SQLException{if(streamed)q("absolute not supported on a streamed ResultSet");r=row-1;return r<n;}
- public boolean relative(int rows)throws SQLException{if(streamed)q("relative not supported on a streamed ResultSet");r+=rows;return r>=0&&r<n;}
- public boolean previous()throws SQLException{if(streamed)q("previous not supported on a streamed ResultSet");--r;return r>=0;}
+ public boolean absolute(int row)throws SQLException{
+   if(streamed)q("absolute not supported on a streamed ResultSet");
+   r=row-1;
+   return r<n;
+ }
+ public boolean relative(int rows)throws SQLException{
+   if(streamed)q("relative not supported on a streamed ResultSet");
+   r+=rows;
+   return r>=0&&r<n;
+ }
+ public boolean previous()throws SQLException{
+   if(streamed)q("previous not supported on a streamed ResultSet");
+   --r;
+   return r>=0;
+ }
  public void setFetchDirection(int direction)throws SQLException{q("setFetchDirection not supported");}
  public int getFetchDirection()throws SQLException{return FETCH_FORWARD;}
  public void setFetchSize(int rows)throws SQLException{}public int getFetchSize()throws SQLException{return st!=null?st.getFetchSize():0;}
