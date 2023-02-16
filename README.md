@@ -1,41 +1,58 @@
-# jdbc for kdb+
-JDBC client for kdb+
+# JDBC for kdb+
 
-## Introduction
+_JDBC client for kdb+_
 
-JDBC driver for kdb+
 
-## Documentation
 
-Documentation outlining the functionality available for this interface can be found [here](https://code.kx.com/q/interfaces/jdbc-client-for-kdb/).
+**Documentation** is in :open_file_folder: [`docs`](docs)
 
-## Building from Source
 
-Java 1.8 (and above) is recommended. Please ensure that your `JAVA_HOME` environment variable is set to the version of Java you have installed (or the one preferred if you have multiple versions).
+## Building from source
 
-You will also need [Apache Maven](https://maven.apache.org/) installed. Run the following the check you have it setup and configured correctly
+### Prerequisites
 
-`mvn -version`
+-   Java 1.8+ is recommended
 
-In order to build the library, run the following within the directory where the pom.xml file is located (from the downloaded source). NOTE: the java kdb interface should already be installed on your system prior to building, and can be found [here](https://github.com/KxSystems/javakdb/releases/tag/1.0)
+	Ensure your `JAVA_HOME` environment variable is set to the version of Java you have installed (or the one preferred if you have multiple versions).
 
-`mvn clean compile`
+-   [Apache Maven](https://maven.apache.org/)
 
-If you wish to deploy the library to your machines local repository, in order to be used by other maven projects on your machine, run the following
+	Run the following to check you have it setup and configured correctly.
 
-`mvn clean install`
+	```bash
+	mvn -version
+	```
+-	[javakdb interface](https://github.com/KxSystems/javakdb)
 
-Please refer to the [Apache Maven documentation](https://maven.apache.org/guides/index.html) for further details
 
-## Code Example
+### Build
 
-The following describes each with an example of how to run from Maven (note: Maven is not required to run the applications, but used here for convenience).
+To build the library, run the following within the directory where the `pom.xml` file is located (from the downloaded source). 
 
-The example remotely creates a table 't', then queries kdb+ for its contents, which it then displays its columns/data to the console
+```bash
+mvn clean compile
+```
 
-`mvn clean install` should be performed prior to running.
+To deploy the library to your machine’s local repository (e.g. for use by other Maven projects on your machine), run the following
 
-The jdbc driver passes the q or sql text to the server. For SQL support you should take the ps.k file from the odbc3 zip file [here](https://code.kx.com/v2/interfaces/q-server-for-odbc3/)
+```bash
+mvn clean install
+```
+
+:globe_with_meridians:
+[Apache Maven documentation](https://maven.apache.org/guides) 
+
+
+## Code example
+
+The following describes, each with an example, how to run from Maven. (Maven is not required to run the applications, but used here for convenience.)
+
+The example remotely creates a table `t`, then queries kdb+ for its contents, and then displays its columns/data to the console.
+
+Run `mvn clean install`.
+
+The JDBC driver passes the q or SQL text to the server. 
+For SQL support, take the `ps.k` file from the [ODBC3 zip file](https://code.kx.com/q/interfaces/q-server-for-odbc3/)
 and ensure that is loaded into your kdb+ process. ps.k is the sql transpiler or enquire about SQL support with KX Insights. The example requires kdb+ to be listening on TCP port 5001
 
 ```mvn exec:java -pl jdbc-example -Dexec.mainClass="test"```
