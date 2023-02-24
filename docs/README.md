@@ -1,13 +1,5 @@
 # JDBC client for kdb+
 
-Compile:
-
-```bash
-java jdbc.java
-jar cf jdbc.jar *.class
-```
-
-and use as normal.
 
 > :warning: **Depends on Java interface**
 >
