@@ -1,11 +1,25 @@
-# JDBC for kdb+
+# JDBC client for kdb+
 
-_JDBC client for kdb+_
+> :warning: **Depends on Java interface**
+>
+> Compilation depends on version 1 of the Java interface
+> [KxSystems/javakdb](https://github.com/KxSystems/javakdb/releases/tag/1.0).
 
+> **Implementation**
+>
+> This is a pure Java native-protocol driver (type 4) JDBC driver. The implementation builds on the lower-level [javakdb API](https://github.com/KxSystems/javakdb), whic
+h is somewhat simpler, and a good choice for application development when support for legacy code is not a consideration.
 
+The JDBC driver implements only the minimal core of the JDBC feature set. 
 
-**Documentation** is in :open_file_folder: [`docs`](docs)
+There is no significant difference in performance between using the `!PreparedStatement`, `!CallableStatement` or `Statement` interfaces.
 
+Q does not have the concept of transactions as expected by the JDBC API. 
+That is, you cannot open a connection, explicitly begin a transaction, issue a series of separate queries within that transaction and finally roll back or commit the transaction. 
+It will always behave as if `autoCommit` is set to true and the transaction isolation is set to `SERIALIZABLE`.
+In practice, this means that any single query (or sequence of queries if executed in a single JDBC call) will be executed in isolation without noticing the effects of other queries, and modifications made to the database will always be permanent.
+
+Operations must be prefixed by `"q)"` in order to be executed as q statements. 
 
 ## Building from source
 
@@ -55,4 +69,61 @@ The JDBC driver passes the q or SQL text to the server.
 For SQL support, take the `ps.k` file from the [ODBC3 zip file](https://code.kx.com/q/interfaces/q-server-for-odbc3/)
 and ensure that is loaded into your kdb+ process. ps.k is the sql transpiler or enquire about SQL support with KX Insights. The example requires kdb+ to be listening on TCP port 5001
 
-```mvn exec:java -pl jdbc-example -Dexec.mainClass="test"```
+Example1 shows executing inserts with types and general select
+
+```mvn exec:java -pl jdbc-example -Dexec.mainClass="Example1" -q```
+
+Example2 show running a q function and converting results to their appropriate types
+
+```mvn exec:java -pl jdbc-example -Dexec.mainClass="Example2" -q```
+
+## Connection pooling
+
+If little work is being performed per interaction via the JDBC driver,
+that is, few queries and each query is very quick to execute,
+then there is a significant advantage to using connection pooling.
+
+Using the [Apache Commons DBCP](https://commons.apache.org/proper/commons-dbcp/) component improves the performance of this case by about 70%.
+DBCP avoids some complexity which can be introduced by other connection pool managers.
+For example, it handles connections in the pool that have become invalid (say due to a database restart) by automatically reconnecting.
+Furthermore it offers configuration options to check the status of connections in the connection pool using a variety of strategies.
+
+Although it is not necessary to call the `close` method on `!ResultSet`, `Statement`, `!PreparedStatement` and `!CallableStatement` when using the q JDBC driver,
+it is recommended with the DBCP component as it performs checks to ensure all resources are cleaned up, and has the ability to report resource leaks.
+Explicitly closing the resources avoids a small runtime cost.
+
+```java
+#!java
+
+// An ObjectPool serves as the pool of connections.
+//
+ObjectPool connectionPool = new GenericObjectPool(null);
+
+// A ConnectionFactory is used by the to create Connections.
+// This example uses the DriverManagerConnectionFactory, with a
+// a connection string for a local q database listening on port 5001.
+//
+ConnectionFactory connectionFactory =
+            new DriverManagerConnectionFactory("jdbc:q:localhost:5001",null);
+
+// A PoolableConnectionFactory is used to wrap the Connections
+// created by the ConnectionFactory with the classes that implement
+// the pooling functionality.
+//
+PoolableConnectionFactory poolableConnectionFactory = new
+            PoolableConnectionFactory(connectionFactory,connectionPool,null,
+            null,false,true);
+
+// Finally, we create the PoolingDriver itself:
+//
+Class.forName("org.apache.commons.dbcp.PoolingDriver");
+PoolingDriver driver = (PoolingDriver)
+            DriverManager.getDriver("jdbc:apache:commons:dbcp:");
+
+// ...and register our pool with it.
+//
+driver.registerPool("q",connectionPool);
+
+// Now we can just use the connect string "jdbc:apache:commons:dbcp:q"
+// to access our pool of Connections.
+```
