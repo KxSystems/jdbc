@@ -95,9 +95,17 @@ Explicitly closing the resources avoids a small runtime cost.
 ```java
 #!java
 
-// An ObjectPool serves as the pool of connections.
-//
-ObjectPool connectionPool = new GenericObjectPool(null);
+import org.apache.commons.pool2.ObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.apache.commons.dbcp2.ConnectionFactory;
+import org.apache.commons.dbcp2.DriverManagerConnectionFactory;
+import org.apache.commons.dbcp2.PoolableConnection;
+import org.apache.commons.dbcp2.PoolableConnectionFactory;
+import org.apache.commons.dbcp2.PoolingDataSource;
+
+...
+
+Class.forName("jdbc");
 
 // A ConnectionFactory is used by the to create Connections.
 // This example uses the DriverManagerConnectionFactory, with a
@@ -110,20 +118,26 @@ ConnectionFactory connectionFactory =
 // created by the ConnectionFactory with the classes that implement
 // the pooling functionality.
 //
-PoolableConnectionFactory poolableConnectionFactory = new
-            PoolableConnectionFactory(connectionFactory,connectionPool,null,
-            null,false,true);
+PoolableConnectionFactory poolableConnectionFactory = new 
+            PoolableConnectionFactory(connectionFactory, null);
 
-// Finally, we create the PoolingDriver itself:
-//
-Class.forName("org.apache.commons.dbcp.PoolingDriver");
-PoolingDriver driver = (PoolingDriver)
-            DriverManager.getDriver("jdbc:apache:commons:dbcp:");
+// An ObjectPool serves as the pool of connections.
+ObjectPool<PoolableConnection> connectionPool = new 
+            GenericObjectPool<>(poolableConnectionFactory);
 
-// ...and register our pool with it.
-//
-driver.registerPool("q",connectionPool);
+// Set the factory's pool property to the owning pool
+poolableConnectionFactory.setPool(connectionPool);
 
-// Now we can just use the connect string "jdbc:apache:commons:dbcp:q"
-// to access our pool of Connections.
+// Now we can get a data source as before
+PoolingDataSource<PoolableConnection> dataSource = new 
+            PoolingDataSource<>(connectionPool);
+
+// As we use/close connections, we can see the number
+// of underlying instances in the pool
+java.sql.Connection c1=dataSource.getConnection();
+java.sql.Connection c2=dataSource.getConnection();
+c2.close();
+
+System.out.println("num active "+connectionPool.getNumActive());
+System.out.println("num idle "+connectionPool.getNumIdle());
 ```
