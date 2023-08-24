@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import java.util.concurrent.Executor;
 
 public class jdbc implements Driver{
+private static final String CLOSED="Closed";
 static int V=2;
 static int v=0;
 static void O(String s){System.out.println(s);}
@@ -65,20 +66,26 @@ public class co implements Connection{
    }
  }
  public Object getMoreRows()throws SQLException{
-   try{
-     if(streaming){
+   if(isClosed())q(CLOSED);
+   if(streaming){
+     try{
        Object[]msg=c.readMsg();
        if((byte)msg[0]==(byte)2) // response msg type is the last msg to be received
          streaming=false;
        return msg[1];
      }
-   }
-   catch(Exception e){
-     q(e);
+     catch(IOException e){
+      close();
+      q(e);
+     }
+     catch(Exception e){
+       q(e);
+     }
    }
    return null;
  }
  public Object[] ex(String s,Object[]p,int maxRows, int fetchSize)throws SQLException{
+   if(isClosed())q(CLOSED);
    if(streaming)
      throw new SQLException("A ResultSet is still open on this connection with messages queued from the server");
    try{
@@ -92,11 +99,45 @@ public class co implements Connection{
      streaming=(byte)msg[0]==(byte)0;// msg[0]==0 means async msg, i.e. streamed result. msg[0]==2 would be the final response msg already
      return new Object[]{streaming,msg[1]};
    }
-   catch(Exception e){q(e);}
+   catch(IOException e){
+    close();
+    q(e);
+   }
+   catch(Exception e){
+    q(e);
+   }
+   return new Object[0];
+ }
+ public rs qx(String s)throws SQLException{
+   if(isClosed())q(CLOSED);
+   try{
+     c.k(s);
+     return new rs(null,new Object[]{Boolean.FALSE,c.readMsg()[1]});
+   }
+   catch(IOException e){
+    close();
+    q(e);
+   }
+   catch(Exception e){
+     q(e);
+   }
    return null;
  }
- public rs qx(String s)throws SQLException{try{c.k(s);return new rs(null,new Object[]{Boolean.FALSE,c.readMsg()[1]});}catch(Exception e){q(e);return null;}}
- public rs qx(String s,Object x)throws SQLException{try{c.k(s,x);return new rs(null,new Object[]{Boolean.FALSE,c.readMsg()[1]});}catch(Exception e){q(e);return null;}}
+ public rs qx(String s,Object x)throws SQLException{
+   if(isClosed())q(CLOSED);
+   try{
+     c.k(s,x);
+     return new rs(null,new Object[]{Boolean.FALSE,c.readMsg()[1]});
+   }
+   catch(IOException e){
+    close();
+    q(e);
+   }
+   catch(Exception e){
+     q(e);
+   }
+   return null;
+ }
  private boolean a=true;
  public void setAutoCommit(boolean b)throws SQLException{a=b;}
  public boolean getAutoCommit()throws SQLException{return a;}
@@ -125,7 +166,7 @@ public class co implements Connection{
    try{
      c.close();
    }catch(IOException e){
-     q(e);
+     /*ignored*/
    }finally{
      c=null;
    }
@@ -257,12 +298,12 @@ public class st implements Statement{
  public boolean isClosed()throws SQLException{return co==null||co.isClosed();}
  public void setPoolable(boolean b)throws SQLException{
   if(isClosed())
-    throw new SQLException("Closed");
+    throw new SQLException(CLOSED);
   poolable=b;
  }
  public boolean isPoolable()throws SQLException{
   if(isClosed())
-    throw new SQLException("Closed");
+    throw new SQLException(CLOSED);
   return poolable;
  }
  public <T> T unwrap(Class<T> type)throws SQLException{q();return null;}
