@@ -140,8 +140,8 @@ public class co implements Connection{
  private boolean a=true;
  public void setAutoCommit(boolean b)throws SQLException{a=b;}
  public boolean getAutoCommit()throws SQLException{return a;}
- public void rollback()throws SQLException{}
- public void commit()throws SQLException{}
+ public void rollback()throws SQLException{ /* transactions not supported */ }
+ public void commit()throws SQLException{ /* transactions not supported */ }
  public boolean isClosed()throws SQLException{return c==null;}
  public Statement createStatement()throws SQLException{return new st(this);}
  public DatabaseMetaData getMetaData()throws SQLException{return new dm(this);}
@@ -158,7 +158,7 @@ public class co implements Connection{
  public void setTransactionIsolation(int x)throws SQLException{i=x;}
  public int getTransactionIsolation()throws SQLException{return i;}
  public SQLWarning getWarnings()throws SQLException{return null;}
- public void clearWarnings()throws SQLException{}
+ public void clearWarnings()throws SQLException{ /* not supported */ }
  public void close()throws SQLException{
    if(isClosed())
      return;
@@ -174,14 +174,14 @@ public class co implements Connection{
  public PreparedStatement prepareStatement(String s,int resultSetType,int resultSetConcurrency)throws SQLException{return new ps(this,s);}
  public CallableStatement prepareCall(String s,int resultSetType,int resultSetConcurrency)throws SQLException{return new cs(this,s);}
  public Map<String, Class<?>> getTypeMap()throws SQLException{return null;}
- public void setTypeMap(Map map)throws SQLException{}
+ public void setTypeMap(Map map)throws SQLException{ /* not supported */ }
 //3
  public void setHoldability(int holdability)throws SQLException{h=holdability;}
  public int getHoldability()throws SQLException{return h;}
  public Savepoint setSavepoint()throws SQLException{q("setSavepoint not supported");return null;}
  public Savepoint setSavepoint(String name)throws SQLException{q("setSavepoint not supported");return null;}
- public void rollback(Savepoint savepoint)throws SQLException{}
- public void releaseSavepoint(Savepoint savepoint)throws SQLException{}
+ public void rollback(Savepoint savepoint)throws SQLException{ /* transactions not supported */ }
+ public void releaseSavepoint(Savepoint savepoint)throws SQLException{ /* transactions not supported */ }
  public Statement createStatement(int resultSetType,int resultSetConcurrency,int resultSetHoldability)throws SQLException{return new st(this);}
  public PreparedStatement prepareStatement(String s,int resultSetType,int resultSetConcurrency,int resultSetHoldability)throws SQLException{return new ps(this,s);}
  public CallableStatement prepareCall(String s,int resultSetType,int resultSetConcurrency,int resultSetHoldability)throws SQLException{return new cs(this,s);}
@@ -210,7 +210,7 @@ public class co implements Connection{
  public int getNetworkTimeout()throws SQLFeatureNotSupportedException{throw new SQLFeatureNotSupportedException("nyi");}
  public void setNetworkTimeout(Executor executor,int milliseconds)throws SQLFeatureNotSupportedException{throw new SQLFeatureNotSupportedException("nyi");}
  public void abort(Executor executor)throws SQLFeatureNotSupportedException{throw new SQLFeatureNotSupportedException("nyi");}
- public void setSchema(String s){}
+ public void setSchema(String s){ /* not supported */ }
  public String getSchema(){return null;}
 }
 
@@ -254,11 +254,11 @@ public class st implements Statement{
  public void setQueryTimeout(int i)throws SQLException{timeOut=i;}
  // truncate excess BINARY,VARBINARY,LONGVARBINARY,CHAR,VARCHAR,and LONGVARCHAR fields
  public int getMaxFieldSize()throws SQLException{return 0;}
- public void setMaxFieldSize(int i)throws SQLException{}
- public void setEscapeProcessing(boolean b)throws SQLException{}
- public void cancel()throws SQLException{}
+ public void setMaxFieldSize(int i)throws SQLException{ /* not supported */ }
+ public void setEscapeProcessing(boolean b)throws SQLException{ /* not supported */ }
+ public void cancel()throws SQLException{ /* not supported */ }
  public SQLWarning getWarnings()throws SQLException{return null;}
- public void clearWarnings()throws SQLException{}
+ public void clearWarnings()throws SQLException{ /* not supported */ }
  // positioned update? different statement?
  public void setCursorName(String name)throws SQLException{q("setCursorName not supported");}
  public boolean getMoreResults()throws SQLException{return false;}
@@ -279,7 +279,7 @@ public class st implements Statement{
  public int getResultSetConcurrency()throws SQLException{return ResultSet.CONCUR_READ_ONLY;}
  public int getResultSetType()throws SQLException{return ResultSet.TYPE_SCROLL_INSENSITIVE;}
  public void addBatch(String sql)throws SQLException{q("addBatch not supported");}
- public void clearBatch()throws SQLException{}
+ public void clearBatch()throws SQLException{ /* not supported */ }
  public int[]executeBatch()throws SQLException{return new int[0];}
  public Connection getConnection()throws SQLException{return co;}
 //3
@@ -330,7 +330,7 @@ public class ps extends st implements PreparedStatement{
     Object[]r=new Object[i];
     System.arraycopy(p,0,r,0,n);
     p=r;
-    for(;n<i;)p[n++]=null;
+    while(n<i)p[n++]=null;
   }
   p[i-1]=x;
  }
@@ -354,7 +354,7 @@ public class ps extends st implements PreparedStatement{
  @Deprecated
  public void setUnicodeStream(int i,InputStream x,int length)throws SQLException{q();}
  public void setBinaryStream(int i,InputStream x,int length)throws SQLException{q();}
- public void addBatch()throws SQLException{}
+ public void addBatch()throws SQLException{ /* not supported */ }
  public void setCharacterStream(int parameterIndex,Reader reader,int length)throws SQLException{q();}
  public void setRef(int i,Ref x)throws SQLException{q();}
  public void setBlob(int i,Blob x)throws SQLException{q();}
@@ -391,8 +391,8 @@ public class ps extends st implements PreparedStatement{
 
 public class cs extends ps implements CallableStatement{
  public cs(co c,String s){super(c,s);}
- public void registerOutParameter(int i,int sqlType)throws SQLException{}
- public void registerOutParameter(int i,int sqlType,int scale)throws SQLException{}
+ public void registerOutParameter(int i,int sqlType)throws SQLException{ /* not supported */ }
+ public void registerOutParameter(int i,int sqlType,int scale)throws SQLException{ /* not supported */ }
  public boolean wasNull()throws SQLException{return false;}
  public String getString(int i)throws SQLException{return null;}
  public boolean getBoolean(int i)throws SQLException{return false;}
@@ -593,7 +593,7 @@ public class rs implements ResultSet{
  public InputStream getUnicodeStream(String s)throws SQLException{return getUnicodeStream(findColumn(s));}
  public InputStream getBinaryStream(String s)throws SQLException{return getBinaryStream(findColumn(s));}
  public SQLWarning getWarnings()throws SQLException{return null;}
- public void clearWarnings()throws SQLException{}
+ public void clearWarnings()throws SQLException{ /* not supported */ }
  public String getCursorName()throws SQLException{q("getCursorName not supported");return"";}
  public void close()throws SQLException{d=null;if(st!=null)while(null!=st.co.getMoreRows());}// drain remaining streamed messages
  public Reader getCharacterStream(int columnIndex)throws SQLException{q();return null;}
@@ -646,7 +646,8 @@ public class rs implements ResultSet{
  }
  public void setFetchDirection(int direction)throws SQLException{q("setFetchDirection not supported");}
  public int getFetchDirection()throws SQLException{return FETCH_FORWARD;}
- public void setFetchSize(int rows)throws SQLException{}public int getFetchSize()throws SQLException{return st!=null?st.getFetchSize():0;}
+ public void setFetchSize(int rows)throws SQLException{ /* not supported */ }
+ public int getFetchSize()throws SQLException{return st!=null?st.getFetchSize():0;}
  public int getType()throws SQLException{return streamed?TYPE_FORWARD_ONLY:TYPE_SCROLL_SENSITIVE;}
  public int getConcurrency()throws SQLException{return CONCUR_READ_ONLY;}
  public boolean rowUpdated()throws SQLException{q();return false;}
