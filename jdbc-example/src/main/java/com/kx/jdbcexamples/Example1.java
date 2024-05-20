@@ -1,4 +1,5 @@
 // q -p 5001   use q/c/jdbc.jar
+package com.kx.jdbcexamples;
 import java.sql.*;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -14,7 +15,7 @@ public class Example1{
     Statement st = null;
     PreparedStatement p = null;
     try{
-      Class.forName("jdbc");  //loads the driver 
+      Class.forName("com.kx.jdbc");  //loads the driver 
       LOGGER.info("Connecting to localhost:5001");
       h = DriverManager.getConnection(DB_URL,USER,PASS);
 
