@@ -71,11 +71,11 @@ and ensure that is loaded into your kdb+ process. ps.k is the sql transpiler or 
 
 Example1 shows executing inserts with types and general select
 
-```mvn exec:java -pl jdbc-example -Dexec.mainClass="Example1" -q```
+```mvn exec:java -pl jdbc-example -Dexec.mainClass="com.kx.jdbcexamples.Example1" -q```
 
 Example2 show running a q function and converting results to their appropriate types
 
-```mvn exec:java -pl jdbc-example -Dexec.mainClass="Example2" -q```
+```mvn exec:java -pl jdbc-example -Dexec.mainClass="com.kx.jdbcexamples.Example2" -q```
 
 ## Connection pooling
 
@@ -105,7 +105,7 @@ import org.apache.commons.dbcp2.PoolingDataSource;
 
 ...
 
-Class.forName("jdbc");
+Class.forName("com.kx.jdbc");
 
 // A ConnectionFactory is used by the to create Connections.
 // This example uses the DriverManagerConnectionFactory, with a

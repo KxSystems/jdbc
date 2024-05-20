@@ -12,8 +12,7 @@
 //           jdk1.6 specific parts are sections after //4
 //           For compiling for earlier jdks, remove those sections
 //2007.04.20 c.java sql.date/time/timestamp
-//jar cf jdbc.jar *.class   url(jdbc:q:host:port) isql(new service resources jdbc.jar)
-//javac -Xbootclasspath:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar -target 1.6 -source 1.6 jdbc.java 
+package com.kx;
 import kx.*;
 import java.io.*;
 import java.math.*;

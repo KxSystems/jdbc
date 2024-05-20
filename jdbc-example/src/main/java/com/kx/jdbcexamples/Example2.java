@@ -1,3 +1,4 @@
+package com.kx.jdbcexamples;
 import java.sql.*;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -5,7 +6,7 @@ import java.util.logging.Level;
 public class Example2 {
   private static final Logger LOGGER = Logger.getLogger(Example2.class.getName());
 
-  static final String JDBC_DRIVER="jdbc";
+  static final String JDBC_DRIVER="com.kx.jdbc";
   static final String DB_URL="jdbc:q:localhost:5001";
   static final String USER="username";
   static final String PASS="password";
