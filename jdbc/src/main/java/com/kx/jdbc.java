@@ -26,18 +26,18 @@ import java.util.concurrent.Executor;
 
 public class jdbc implements Driver{
 private static final String CLOSED="Closed";
-static int V=2;
-static int v=0;
+private static final int MAJOR_VERSION=2;
+private static final int MINOR_VERSION=0;
 static void O(String s){System.out.println(s);}
-public int getMajorVersion(){return V;}
-public int getMinorVersion(){return v;}
+public int getMajorVersion(){return MAJOR_VERSION;}
+public int getMinorVersion(){return MINOR_VERSION;}
 public boolean jdbcCompliant(){return false;}
 public boolean acceptsURL(String s){return s.startsWith("jdbc:q:");}
 public Connection connect(String s,Properties p)throws SQLException{return!acceptsURL(s)?null:new co(s.substring(7),p!=null?p.get("user"):p,p!=null?p.get("password"):p);}
 public DriverPropertyInfo[]getPropertyInfo(String s,Properties p)throws SQLException{return new DriverPropertyInfo[0];}
 static{try{DriverManager.registerDriver(new jdbc());}catch(Exception e){O(e.getMessage());}}
-static int[]SQLTYPE={0,16,0,0,-2,5,4,-5,7,8,0,12,0,0,91,93,0,0,0,92};
-static String[]TYPE={"","boolean","","","byte","short","int","long","real","float","char","symbol","","month","date","timestamp","","minute","second","time"};
+static final int[]SQLTYPE={0,16,0,0,-2,5,4,-5,7,8,0,12,0,0,91,93,0,0,0,92};
+static final String[]TYPE={"","boolean","","","byte","short","int","long","real","float","char","symbol","","month","date","timestamp","","minute","second","time"};
 static int find(String[]x,String s){
   int i=0;
   while(i<x.length&&!s.equals(x[i]))++i;
@@ -884,9 +884,9 @@ public class dm implements DatabaseMetaData{private co co;public dm(co x){co=x;}
  public String getDatabaseProductName()throws SQLException{return"kdb";}
  public String getDatabaseProductVersion()throws SQLException{return"2.0";}
  public String getDriverName()throws SQLException{return"jdbc";}
- public String getDriverVersion()throws SQLException{return V+"."+v;}
- public int getDriverMajorVersion(){return V;}
- public int getDriverMinorVersion(){return v;}
+ public String getDriverVersion()throws SQLException{return MAJOR_VERSION+"."+MINOR_VERSION;}
+ public int getDriverMajorVersion(){return MAJOR_VERSION;}
+ public int getDriverMinorVersion(){return MINOR_VERSION;}
  public boolean isCatalogAtStart()throws SQLException{return true;}
  public boolean isReadOnly()throws SQLException{return false;}
  public boolean nullsAreSortedHigh()throws SQLException{return false;}
