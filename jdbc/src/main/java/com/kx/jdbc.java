@@ -49,7 +49,9 @@ static int find(int[]x,int j){
   return i;
 }
 static void q(String s)throws SQLException{throw new SQLException(s);}
-static void q()throws SQLException{throw new SQLFeatureNotSupportedException("nyi");}
+static void qNotSupported()throws SQLException{throw new SQLFeatureNotSupportedException("nyi");}
+static boolean qNotSupportedBool()throws SQLException{throw new SQLFeatureNotSupportedException("nyi");}
+static <T> T qNotSupportedObj()throws SQLException{throw new SQLFeatureNotSupportedException("nyi");}
 static void q(Exception e)throws SQLException{throw new SQLException(e.getMessage());}
 
 public class co implements Connection{
@@ -190,22 +192,22 @@ public class co implements Connection{
  public PreparedStatement prepareStatement(String s,String[]columnNames)throws SQLException{return new ps(this,s);}
 //4
  private Properties clientInfo=new Properties();
- public Clob createClob()throws SQLException{q();return null;}
- public Blob createBlob()throws SQLException{q();return null;}
- public NClob createNClob()throws SQLException{q();return null;}
- public SQLXML createSQLXML()throws SQLException{q();return null;}
+ public Clob createClob()throws SQLException{return qNotSupportedObj();}
+ public Blob createBlob()throws SQLException{return qNotSupportedObj();}
+ public NClob createNClob()throws SQLException{return qNotSupportedObj();}
+ public SQLXML createSQLXML()throws SQLException{return qNotSupportedObj();}
  public boolean isValid(int i)throws SQLException{
-   if(i<0)q();
+   if(i<0)qNotSupported();
    return c!=null;
  }
  public void setClientInfo(String k, String v)throws SQLClientInfoException{clientInfo.setProperty(k,v);}
  public void setClientInfo(Properties p)throws SQLClientInfoException{clientInfo=p;}
  public String getClientInfo(String k)throws SQLException{return (String)clientInfo.get(k);}
  public Properties getClientInfo()throws SQLException{return clientInfo;}
- public Array createArrayOf(String string, Object[] os)throws SQLException{q();return null;}
- public Struct createStruct(String string, Object[] os)throws SQLException{q();return null;}
- public <T> T unwrap(Class<T> type)throws SQLException{q();return null;}
- public boolean isWrapperFor(Class<?> type)throws SQLException{q();return false;}
+ public Array createArrayOf(String string, Object[] os)throws SQLException{return qNotSupportedObj();}
+ public Struct createStruct(String string, Object[] os)throws SQLException{return qNotSupportedObj();}
+ public <T> T unwrap(Class<T> type)throws SQLException{return qNotSupportedObj();}
+ public boolean isWrapperFor(Class<?> type)throws SQLException{return qNotSupportedBool();}
 //1.7
  public int getNetworkTimeout()throws SQLFeatureNotSupportedException{throw new SQLFeatureNotSupportedException("nyi");}
  public void setNetworkTimeout(Executor executor,int milliseconds)throws SQLFeatureNotSupportedException{throw new SQLFeatureNotSupportedException("nyi");}
@@ -305,8 +307,8 @@ public class st implements Statement{
     throw new SQLException(CLOSED);
   return poolable;
  }
- public <T> T unwrap(Class<T> type)throws SQLException{q();return null;}
- public boolean isWrapperFor(Class<?> type)throws SQLException{q();return false;}
+ public <T> T unwrap(Class<T> type)throws SQLException{return qNotSupportedObj();}
+ public boolean isWrapperFor(Class<?> type)throws SQLException{return qNotSupportedBool();}
 //1.7
  boolean _closeOnCompletion=false;
  public void closeOnCompletion(){_closeOnCompletion=true;}
@@ -348,45 +350,45 @@ public class ps extends st implements PreparedStatement{
  public void setDate(int i,Date x)throws SQLException{setObject(i,x);}
  public void setTime(int i,Time x)throws SQLException{setObject(i,x);}
  public void setTimestamp(int i,Timestamp x)throws SQLException{setObject(i,x);}
- public void setBytes(int i,byte[] x)throws SQLException{q();}
- public void setBigDecimal(int i,BigDecimal x)throws SQLException{q();}
- public void setAsciiStream(int i,InputStream x,int length)throws SQLException{q();}
+ public void setBytes(int i,byte[] x)throws SQLException{qNotSupported();}
+ public void setBigDecimal(int i,BigDecimal x)throws SQLException{qNotSupported();}
+ public void setAsciiStream(int i,InputStream x,int length)throws SQLException{qNotSupported();}
  @Deprecated
- public void setUnicodeStream(int i,InputStream x,int length)throws SQLException{q();}
- public void setBinaryStream(int i,InputStream x,int length)throws SQLException{q();}
+ public void setUnicodeStream(int i,InputStream x,int length)throws SQLException{qNotSupported();}
+ public void setBinaryStream(int i,InputStream x,int length)throws SQLException{qNotSupported();}
  public void addBatch()throws SQLException{ /* not supported */ }
- public void setCharacterStream(int parameterIndex,Reader reader,int length)throws SQLException{q();}
- public void setRef(int i,Ref x)throws SQLException{q();}
- public void setBlob(int i,Blob x)throws SQLException{q();}
- public void setClob(int i,Clob x)throws SQLException{q();}
- public void setArray(int i,Array x)throws SQLException{q();}
+ public void setCharacterStream(int parameterIndex,Reader reader,int length)throws SQLException{qNotSupported();}
+ public void setRef(int i,Ref x)throws SQLException{qNotSupported();}
+ public void setBlob(int i,Blob x)throws SQLException{qNotSupported();}
+ public void setClob(int i,Clob x)throws SQLException{qNotSupported();}
+ public void setArray(int i,Array x)throws SQLException{qNotSupported();}
  public ResultSetMetaData getMetaData()throws SQLException{q("getMetaData not supported");return null;}
- public void setDate(int parameterIndex,Date x,Calendar cal)throws SQLException{q();}
- public void setTime(int parameterIndex,Time x,Calendar cal)throws SQLException{q();}
- public void setTimestamp(int parameterIndex,Timestamp x,Calendar cal)throws SQLException{q();}
- public void setNull(int paramIndex,int sqlType,String typeName)throws SQLException{q();}
+ public void setDate(int parameterIndex,Date x,Calendar cal)throws SQLException{qNotSupported();}
+ public void setTime(int parameterIndex,Time x,Calendar cal)throws SQLException{qNotSupported();}
+ public void setTimestamp(int parameterIndex,Timestamp x,Calendar cal)throws SQLException{qNotSupported();}
+ public void setNull(int paramIndex,int sqlType,String typeName)throws SQLException{qNotSupported();}
 //3
- public void setURL(int parameterIndex,URL x)throws SQLException{q();}
+ public void setURL(int parameterIndex,URL x)throws SQLException{qNotSupported();}
  public ParameterMetaData getParameterMetaData()throws SQLException{q("getParameterMetaData not supported");return null;}
 //4
- public void setRowId(int i,RowId rowid)throws SQLException{q();}
- public void setNString(int i,String string)throws SQLException{q();}
- public void setNCharacterStream(int i,Reader reader,long l)throws SQLException{q();}
- public void setNClob(int i,NClob nclob)throws SQLException{q();}
- public void setClob(int i,Reader reader, long l)throws SQLException{q();}
- public void setBlob(int i,InputStream in, long l)throws SQLException{q();}
- public void setNClob(int i,Reader reader, long l)throws SQLException{q();}
- public void setSQLXML(int i,SQLXML sqlxml)throws SQLException{q();}
- public void setAsciiStream(int i,InputStream in,long l)throws SQLException{q();}
- public void setBinaryStream(int i,InputStream in,long l)throws SQLException{q();}
- public void setCharacterStream(int i,Reader reader,long l)throws SQLException{q();}
- public void setAsciiStream(int i,InputStream in)throws SQLException{q();}
- public void setBinaryStream(int i,InputStream in)throws SQLException{q();}
- public void setCharacterStream(int i,Reader reader)throws SQLException{q();}
- public void setNCharacterStream(int i,Reader reader)throws SQLException{q();}
- public void setClob(int i,Reader reader)throws SQLException{q();}
- public void setBlob(int i,InputStream in)throws SQLException{q();}
- public void setNClob(int i,Reader reader)throws SQLException{q();}
+ public void setRowId(int i,RowId rowid)throws SQLException{qNotSupported();}
+ public void setNString(int i,String string)throws SQLException{qNotSupported();}
+ public void setNCharacterStream(int i,Reader reader,long l)throws SQLException{qNotSupported();}
+ public void setNClob(int i,NClob nclob)throws SQLException{qNotSupported();}
+ public void setClob(int i,Reader reader, long l)throws SQLException{qNotSupported();}
+ public void setBlob(int i,InputStream in, long l)throws SQLException{qNotSupported();}
+ public void setNClob(int i,Reader reader, long l)throws SQLException{qNotSupported();}
+ public void setSQLXML(int i,SQLXML sqlxml)throws SQLException{qNotSupported();}
+ public void setAsciiStream(int i,InputStream in,long l)throws SQLException{qNotSupported();}
+ public void setBinaryStream(int i,InputStream in,long l)throws SQLException{qNotSupported();}
+ public void setCharacterStream(int i,Reader reader,long l)throws SQLException{qNotSupported();}
+ public void setAsciiStream(int i,InputStream in)throws SQLException{qNotSupported();}
+ public void setBinaryStream(int i,InputStream in)throws SQLException{qNotSupported();}
+ public void setCharacterStream(int i,Reader reader)throws SQLException{qNotSupported();}
+ public void setNCharacterStream(int i,Reader reader)throws SQLException{qNotSupported();}
+ public void setClob(int i,Reader reader)throws SQLException{qNotSupported();}
+ public void setBlob(int i,InputStream in)throws SQLException{qNotSupported();}
+ public void setNClob(int i,Reader reader)throws SQLException{qNotSupported();}
 }
 
 public class cs extends ps implements CallableStatement{
@@ -409,46 +411,46 @@ public class cs extends ps implements CallableStatement{
  public Timestamp getTimestamp(int i)throws SQLException{return null;}
  public byte[]getBytes(int i)throws SQLException{return null;}
  public Object getObject(int i)throws SQLException{return null;}
- public BigDecimal getBigDecimal(int parameterIndex)throws SQLException{q();return null;}
- public Object getObject(int i,Map map)throws SQLException{q();return null;}
- public Ref getRef(int i)throws SQLException{q();return null;}
- public Blob getBlob(int i)throws SQLException{q();return null;}
- public Clob getClob(int i)throws SQLException{q();return null;}
- public Array getArray(int i)throws SQLException{q();return null;}
- public Date getDate(int parameterIndex,Calendar cal)throws SQLException{q();return null;}
- public Time getTime(int parameterIndex,Calendar cal)throws SQLException{q();return null;}
- public Timestamp getTimestamp(int parameterIndex,Calendar cal)throws SQLException{q();return null;}
- public void registerOutParameter(int paramIndex,int sqlType,String typeName)throws SQLException{q();}
+ public BigDecimal getBigDecimal(int parameterIndex)throws SQLException{return qNotSupportedObj();}
+ public Object getObject(int i,Map map)throws SQLException{return qNotSupportedObj();}
+ public Ref getRef(int i)throws SQLException{return qNotSupportedObj();}
+ public Blob getBlob(int i)throws SQLException{return qNotSupportedObj();}
+ public Clob getClob(int i)throws SQLException{return qNotSupportedObj();}
+ public Array getArray(int i)throws SQLException{return qNotSupportedObj();}
+ public Date getDate(int parameterIndex,Calendar cal)throws SQLException{return qNotSupportedObj();}
+ public Time getTime(int parameterIndex,Calendar cal)throws SQLException{return qNotSupportedObj();}
+ public Timestamp getTimestamp(int parameterIndex,Calendar cal)throws SQLException{return qNotSupportedObj();}
+ public void registerOutParameter(int paramIndex,int sqlType,String typeName)throws SQLException{qNotSupported();}
 //3
- public void registerOutParameter(String parameterName,int sqlType)throws SQLException{q();}
- public void registerOutParameter(String parameterName,int sqlType,int scale)throws SQLException{q();}
- public void registerOutParameter(String parameterName,int sqlType,String typeName)throws SQLException{q();}
- public URL getURL(int parameterIndex)throws SQLException{q();return null;}
- public void setURL(String parameterName,URL val)throws SQLException{q();}
- public void setNull(String parameterName,int sqlType)throws SQLException{q();}
- public void setBoolean(String parameterName,boolean x)throws SQLException{q();}
- public void setByte(String parameterName,byte x)throws SQLException{q();}
- public void setShort(String parameterName,short x)throws SQLException{q();}
- public void setInt(String parameterName,int x)throws SQLException{q();}
- public void setLong(String parameterName,long x)throws SQLException{q();}
- public void setFloat(String parameterName,float x)throws SQLException{q();}
- public void setDouble(String parameterName,double x)throws SQLException{q();}
- public void setBigDecimal(String parameterName,BigDecimal x)throws SQLException{q();}
- public void setString(String parameterName,String x)throws SQLException{q();}
- public void setBytes(String parameterName,byte[]x)throws SQLException{q();}
- public void setDate(String parameterName,Date x)throws SQLException{q();}
- public void setTime(String parameterName,Time x)throws SQLException{q();}
- public void setTimestamp(String parameterName,Timestamp x)throws SQLException{q();}
- public void setAsciiStream(String parameterName,InputStream x,int length)throws SQLException{q();}
- public void setBinaryStream(String parameterName,InputStream x,int length)throws SQLException{q();}
- public void setObject(String parameterName,Object x,int targetSqlType,int scale)throws SQLException{q();}
- public void setObject(String parameterName,Object x,int targetSqlType)throws SQLException{q();}
- public void setObject(String parameterName,Object x)throws SQLException{q();}
- public void setCharacterStream(String parameterName,Reader reader,int length)throws SQLException{q();}
- public void setDate(String parameterName,Date x,Calendar cal)throws SQLException{q();}
- public void setTime(String parameterName,Time x,Calendar cal)throws SQLException{q();}
- public void setTimestamp(String parameterName,Timestamp x,Calendar cal)throws SQLException{q();}
- public void setNull(String parameterName,int sqlType,String typeName)throws SQLException{q();}
+ public void registerOutParameter(String parameterName,int sqlType)throws SQLException{qNotSupported();}
+ public void registerOutParameter(String parameterName,int sqlType,int scale)throws SQLException{qNotSupported();}
+ public void registerOutParameter(String parameterName,int sqlType,String typeName)throws SQLException{qNotSupported();}
+ public URL getURL(int parameterIndex)throws SQLException{return qNotSupportedObj();}
+ public void setURL(String parameterName,URL val)throws SQLException{qNotSupported();}
+ public void setNull(String parameterName,int sqlType)throws SQLException{qNotSupported();}
+ public void setBoolean(String parameterName,boolean x)throws SQLException{qNotSupported();}
+ public void setByte(String parameterName,byte x)throws SQLException{qNotSupported();}
+ public void setShort(String parameterName,short x)throws SQLException{qNotSupported();}
+ public void setInt(String parameterName,int x)throws SQLException{qNotSupported();}
+ public void setLong(String parameterName,long x)throws SQLException{qNotSupported();}
+ public void setFloat(String parameterName,float x)throws SQLException{qNotSupported();}
+ public void setDouble(String parameterName,double x)throws SQLException{qNotSupported();}
+ public void setBigDecimal(String parameterName,BigDecimal x)throws SQLException{qNotSupported();}
+ public void setString(String parameterName,String x)throws SQLException{qNotSupported();}
+ public void setBytes(String parameterName,byte[]x)throws SQLException{qNotSupported();}
+ public void setDate(String parameterName,Date x)throws SQLException{qNotSupported();}
+ public void setTime(String parameterName,Time x)throws SQLException{qNotSupported();}
+ public void setTimestamp(String parameterName,Timestamp x)throws SQLException{qNotSupported();}
+ public void setAsciiStream(String parameterName,InputStream x,int length)throws SQLException{qNotSupported();}
+ public void setBinaryStream(String parameterName,InputStream x,int length)throws SQLException{qNotSupported();}
+ public void setObject(String parameterName,Object x,int targetSqlType,int scale)throws SQLException{qNotSupported();}
+ public void setObject(String parameterName,Object x,int targetSqlType)throws SQLException{qNotSupported();}
+ public void setObject(String parameterName,Object x)throws SQLException{qNotSupported();}
+ public void setCharacterStream(String parameterName,Reader reader,int length)throws SQLException{qNotSupported();}
+ public void setDate(String parameterName,Date x,Calendar cal)throws SQLException{qNotSupported();}
+ public void setTime(String parameterName,Time x,Calendar cal)throws SQLException{qNotSupported();}
+ public void setTimestamp(String parameterName,Timestamp x,Calendar cal)throws SQLException{qNotSupported();}
+ public void setNull(String parameterName,int sqlType,String typeName)throws SQLException{qNotSupported();}
  public String getString(String parameterName)throws SQLException{return null;}
  public boolean getBoolean(String parameterName)throws SQLException{return false;}
  public byte getByte(String parameterName)throws SQLException{return 0;}
@@ -473,38 +475,38 @@ public class cs extends ps implements CallableStatement{
  public Timestamp getTimestamp(String parameterName,Calendar cal)throws SQLException{return null;}
  public URL getURL(String parameterName)throws SQLException{return null;}
 //4
- public RowId getRowId(int i)throws SQLException{q();return null;}
- public RowId getRowId(String string)throws SQLException{q();return null;}
- public void setRowId(String string, RowId rowid)throws SQLException{q();}
- public void setNString(String string, String string1)throws SQLException{q();}
- public void setNCharacterStream(String string, Reader reader, long l)throws SQLException{q();}
- public void setNClob(String string, NClob nclob)throws SQLException{q();}
- public void setClob(String string, Reader reader, long l)throws SQLException{q();}
- public void setBlob(String string, InputStream in, long l)throws SQLException{q();}
- public void setNClob(String string, Reader reader, long l)throws SQLException{q();}
- public NClob getNClob(int i)throws SQLException{q();return null;}
- public NClob getNClob(String string)throws SQLException{q();return null;}
- public void setSQLXML(String string, SQLXML sqlxml)throws SQLException{q();}
- public SQLXML getSQLXML(int i)throws SQLException{q();return null;}
- public SQLXML getSQLXML(String string)throws SQLException{q();return null;}
- public String getNString(int i)throws SQLException{q();return null;}
- public String getNString(String string)throws SQLException{q();return null;}
- public Reader getNCharacterStream(int i)throws SQLException{q();return null;}
- public Reader getNCharacterStream(String string)throws SQLException{q();return null;}
- public Reader getCharacterStream(int i)throws SQLException{q();return null;}
- public Reader getCharacterStream(String string)throws SQLException{q();return null;}
- public void setBlob(String string, Blob blob)throws SQLException{q();}
- public void setClob(String string, Clob clob)throws SQLException{q();}
- public void setAsciiStream(String string, InputStream in, long l)throws SQLException{q();}
- public void setBinaryStream(String string, InputStream in, long l)throws SQLException{q();}
- public void setCharacterStream(String string, Reader reader, long l)throws SQLException{q();}
- public void setAsciiStream(String string, InputStream in)throws SQLException{q();}
- public void setBinaryStream(String string, InputStream in)throws SQLException{q();}
- public void setCharacterStream(String string, Reader reader)throws SQLException{q();}
- public void setNCharacterStream(String string, Reader reader)throws SQLException{q();}
- public void setClob(String string, Reader reader)throws SQLException{q();}
- public void setBlob(String string, InputStream in)throws SQLException{q();}
- public void setNClob(String string, Reader reader)throws SQLException{q();}
+ public RowId getRowId(int i)throws SQLException{return qNotSupportedObj();}
+ public RowId getRowId(String string)throws SQLException{return qNotSupportedObj();}
+ public void setRowId(String string, RowId rowid)throws SQLException{qNotSupported();}
+ public void setNString(String string, String string1)throws SQLException{qNotSupported();}
+ public void setNCharacterStream(String string, Reader reader, long l)throws SQLException{qNotSupported();}
+ public void setNClob(String string, NClob nclob)throws SQLException{qNotSupported();}
+ public void setClob(String string, Reader reader, long l)throws SQLException{qNotSupported();}
+ public void setBlob(String string, InputStream in, long l)throws SQLException{qNotSupported();}
+ public void setNClob(String string, Reader reader, long l)throws SQLException{qNotSupported();}
+ public NClob getNClob(int i)throws SQLException{return qNotSupportedObj();}
+ public NClob getNClob(String string)throws SQLException{return qNotSupportedObj();}
+ public void setSQLXML(String string, SQLXML sqlxml)throws SQLException{qNotSupported();}
+ public SQLXML getSQLXML(int i)throws SQLException{return qNotSupportedObj();}
+ public SQLXML getSQLXML(String string)throws SQLException{return qNotSupportedObj();}
+ public String getNString(int i)throws SQLException{return qNotSupportedObj();}
+ public String getNString(String string)throws SQLException{return qNotSupportedObj();}
+ public Reader getNCharacterStream(int i)throws SQLException{return qNotSupportedObj();}
+ public Reader getNCharacterStream(String string)throws SQLException{return qNotSupportedObj();}
+ public Reader getCharacterStream(int i)throws SQLException{return qNotSupportedObj();}
+ public Reader getCharacterStream(String string)throws SQLException{return qNotSupportedObj();}
+ public void setBlob(String string, Blob blob)throws SQLException{qNotSupported();}
+ public void setClob(String string, Clob clob)throws SQLException{qNotSupported();}
+ public void setAsciiStream(String string, InputStream in, long l)throws SQLException{qNotSupported();}
+ public void setBinaryStream(String string, InputStream in, long l)throws SQLException{qNotSupported();}
+ public void setCharacterStream(String string, Reader reader, long l)throws SQLException{qNotSupported();}
+ public void setAsciiStream(String string, InputStream in)throws SQLException{qNotSupported();}
+ public void setBinaryStream(String string, InputStream in)throws SQLException{qNotSupported();}
+ public void setCharacterStream(String string, Reader reader)throws SQLException{qNotSupported();}
+ public void setNCharacterStream(String string, Reader reader)throws SQLException{qNotSupported();}
+ public void setClob(String string, Reader reader)throws SQLException{qNotSupported();}
+ public void setBlob(String string, InputStream in)throws SQLException{qNotSupported();}
+ public void setNClob(String string, Reader reader)throws SQLException{qNotSupported();}
 //1.7
  public <T>T getObject(String s,Class<T> t)throws SQLFeatureNotSupportedException{throw new SQLFeatureNotSupportedException("nyi");}
  public <T>T getObject(int parameterIndex,Class<T>t)throws SQLFeatureNotSupportedException{throw new SQLFeatureNotSupportedException("nyi");} 
@@ -566,13 +568,13 @@ public class rs implements ResultSet{
  public Date getDate(int i)throws SQLException{return(Date)getObject(i);}
  public Time getTime(int i)throws SQLException{return(Time)getObject(i);}
  public Timestamp getTimestamp(int i)throws SQLException{Object obj=getObject(i);return obj instanceof java.util.Date?new Timestamp(((java.util.Date)obj).getTime()):(Timestamp)obj;}
- public byte[]getBytes(int i)throws SQLException{q();return null;}
+ public byte[]getBytes(int i)throws SQLException{return qNotSupportedObj();}
  @Deprecated
- public BigDecimal getBigDecimal(int i,int scale)throws SQLException{q();return null;}
- public InputStream getAsciiStream(int i)throws SQLException{q();return null;}
+ public BigDecimal getBigDecimal(int i,int scale)throws SQLException{return qNotSupportedObj();}
+ public InputStream getAsciiStream(int i)throws SQLException{return qNotSupportedObj();}
  @Deprecated
- public InputStream getUnicodeStream(int i)throws SQLException{q();return null;}
- public InputStream getBinaryStream(int i)throws SQLException{q();return null;}
+ public InputStream getUnicodeStream(int i)throws SQLException{return qNotSupportedObj();}
+ public InputStream getBinaryStream(int i)throws SQLException{return qNotSupportedObj();}
  public Object getObject(String s)throws SQLException{return getObject(findColumn(s));}
  public boolean getBoolean(String s)throws SQLException{return getBoolean(findColumn(s));}
  public byte getByte(String s)throws SQLException{return getByte(findColumn(s));}
@@ -596,10 +598,10 @@ public class rs implements ResultSet{
  public void clearWarnings()throws SQLException{ /* not supported */ }
  public String getCursorName()throws SQLException{q("getCursorName not supported");return"";}
  public void close()throws SQLException{d=null;if(st!=null)while(null!=st.co.getMoreRows());}// drain remaining streamed messages
- public Reader getCharacterStream(int columnIndex)throws SQLException{q();return null;}
- public Reader getCharacterStream(String columnName)throws SQLException{q();return null;}
- public BigDecimal getBigDecimal(int columnIndex)throws SQLException{q();return null;}
- public BigDecimal getBigDecimal(String columnName)throws SQLException{q();return null;}
+ public Reader getCharacterStream(int columnIndex)throws SQLException{return qNotSupportedObj();}
+ public Reader getCharacterStream(String columnName)throws SQLException{return qNotSupportedObj();}
+ public BigDecimal getBigDecimal(int columnIndex)throws SQLException{return qNotSupportedObj();}
+ public BigDecimal getBigDecimal(String columnName)throws SQLException{return qNotSupportedObj();}
  public boolean isBeforeFirst()throws SQLException{return r<0;}
  public boolean isAfterLast()throws SQLException{
    if(streamed)q("isAfterLast not supported on a streamed ResultSet");
@@ -650,133 +652,133 @@ public class rs implements ResultSet{
  public int getFetchSize()throws SQLException{return st!=null?st.getFetchSize():0;}
  public int getType()throws SQLException{return streamed?TYPE_FORWARD_ONLY:TYPE_SCROLL_SENSITIVE;}
  public int getConcurrency()throws SQLException{return CONCUR_READ_ONLY;}
- public boolean rowUpdated()throws SQLException{q();return false;}
- public boolean rowInserted()throws SQLException{q();return false;}
- public boolean rowDeleted()throws SQLException{q();return false;}
- public void updateNull(int columnIndex)throws SQLException{q();}
- public void updateBoolean(int columnIndex,boolean x)throws SQLException{q();}
- public void updateByte(int columnIndex,byte x)throws SQLException{q();}
- public void updateShort(int columnIndex,short x)throws SQLException{q();}
- public void updateInt(int columnIndex,int x)throws SQLException{q();}
- public void updateLong(int columnIndex,long x)throws SQLException{q();}
- public void updateFloat(int columnIndex,float x)throws SQLException{q();}
- public void updateDouble(int columnIndex,double x)throws SQLException{q();}
- public void updateBigDecimal(int columnIndex,BigDecimal x)throws SQLException{q();}
- public void updateString(int columnIndex,String x)throws SQLException{q();}
- public void updateBytes(int columnIndex,byte[]x)throws SQLException{q();}
- public void updateDate(int columnIndex,Date x)throws SQLException{q();}
- public void updateTime(int columnIndex,Time x)throws SQLException{q();}
- public void updateTimestamp(int columnIndex,Timestamp x)throws SQLException{q();}
- public void updateAsciiStream(int columnIndex,InputStream x,int length)throws SQLException{q();}
- public void updateBinaryStream(int columnIndex,InputStream x,int length)throws SQLException{q();}
- public void updateCharacterStream(int columnIndex,Reader x,int length)throws SQLException{q();}
- public void updateObject(int columnIndex,Object x,int scale)throws SQLException{q();}
- public void updateObject(int columnIndex,Object x)throws SQLException{q();}
- public void updateNull(String columnName)throws SQLException{q();}
- public void updateBoolean(String columnName,boolean x)throws SQLException{q();}
- public void updateByte(String columnName,byte x)throws SQLException{q();}
- public void updateShort(String columnName,short x)throws SQLException{q();}
- public void updateInt(String columnName,int x)throws SQLException{q();}
- public void updateLong(String columnName,long x)throws SQLException{q();}
- public void updateFloat(String columnName,float x)throws SQLException{q();}
- public void updateDouble(String columnName,double x)throws SQLException{q();}
- public void updateBigDecimal(String columnName,BigDecimal x)throws SQLException{q();}
- public void updateString(String columnName,String x)throws SQLException{q();}
- public void updateBytes(String columnName,byte[]x)throws SQLException{q();}
- public void updateDate(String columnName,Date x)throws SQLException{q();}
- public void updateTime(String columnName,Time x)throws SQLException{q();}
- public void updateTimestamp(String columnName,Timestamp x)throws SQLException{q();}
- public void updateAsciiStream(String columnName,InputStream x,int length)throws SQLException{q();}
- public void updateBinaryStream(String columnName,InputStream x,int length)throws SQLException{q();}
- public void updateCharacterStream(String columnName,Reader reader,int length)throws SQLException{q();}
- public void updateObject(String columnName,Object x,int scale)throws SQLException{q();}
- public void updateObject(String columnName,Object x)throws SQLException{q();}
- public void insertRow()throws SQLException{q();}
- public void updateRow()throws SQLException{q();}
- public void deleteRow()throws SQLException{q();}
- public void refreshRow()throws SQLException{q();}
- public void cancelRowUpdates()throws SQLException{q();}
- public void moveToInsertRow()throws SQLException{q();}
- public void moveToCurrentRow()throws SQLException{q();}
+ public boolean rowUpdated()throws SQLException{return qNotSupportedBool();}
+ public boolean rowInserted()throws SQLException{return qNotSupportedBool();}
+ public boolean rowDeleted()throws SQLException{return qNotSupportedBool();}
+ public void updateNull(int columnIndex)throws SQLException{qNotSupported();}
+ public void updateBoolean(int columnIndex,boolean x)throws SQLException{qNotSupported();}
+ public void updateByte(int columnIndex,byte x)throws SQLException{qNotSupported();}
+ public void updateShort(int columnIndex,short x)throws SQLException{qNotSupported();}
+ public void updateInt(int columnIndex,int x)throws SQLException{qNotSupported();}
+ public void updateLong(int columnIndex,long x)throws SQLException{qNotSupported();}
+ public void updateFloat(int columnIndex,float x)throws SQLException{qNotSupported();}
+ public void updateDouble(int columnIndex,double x)throws SQLException{qNotSupported();}
+ public void updateBigDecimal(int columnIndex,BigDecimal x)throws SQLException{qNotSupported();}
+ public void updateString(int columnIndex,String x)throws SQLException{qNotSupported();}
+ public void updateBytes(int columnIndex,byte[]x)throws SQLException{qNotSupported();}
+ public void updateDate(int columnIndex,Date x)throws SQLException{qNotSupported();}
+ public void updateTime(int columnIndex,Time x)throws SQLException{qNotSupported();}
+ public void updateTimestamp(int columnIndex,Timestamp x)throws SQLException{qNotSupported();}
+ public void updateAsciiStream(int columnIndex,InputStream x,int length)throws SQLException{qNotSupported();}
+ public void updateBinaryStream(int columnIndex,InputStream x,int length)throws SQLException{qNotSupported();}
+ public void updateCharacterStream(int columnIndex,Reader x,int length)throws SQLException{qNotSupported();}
+ public void updateObject(int columnIndex,Object x,int scale)throws SQLException{qNotSupported();}
+ public void updateObject(int columnIndex,Object x)throws SQLException{qNotSupported();}
+ public void updateNull(String columnName)throws SQLException{qNotSupported();}
+ public void updateBoolean(String columnName,boolean x)throws SQLException{qNotSupported();}
+ public void updateByte(String columnName,byte x)throws SQLException{qNotSupported();}
+ public void updateShort(String columnName,short x)throws SQLException{qNotSupported();}
+ public void updateInt(String columnName,int x)throws SQLException{qNotSupported();}
+ public void updateLong(String columnName,long x)throws SQLException{qNotSupported();}
+ public void updateFloat(String columnName,float x)throws SQLException{qNotSupported();}
+ public void updateDouble(String columnName,double x)throws SQLException{qNotSupported();}
+ public void updateBigDecimal(String columnName,BigDecimal x)throws SQLException{qNotSupported();}
+ public void updateString(String columnName,String x)throws SQLException{qNotSupported();}
+ public void updateBytes(String columnName,byte[]x)throws SQLException{qNotSupported();}
+ public void updateDate(String columnName,Date x)throws SQLException{qNotSupported();}
+ public void updateTime(String columnName,Time x)throws SQLException{qNotSupported();}
+ public void updateTimestamp(String columnName,Timestamp x)throws SQLException{qNotSupported();}
+ public void updateAsciiStream(String columnName,InputStream x,int length)throws SQLException{qNotSupported();}
+ public void updateBinaryStream(String columnName,InputStream x,int length)throws SQLException{qNotSupported();}
+ public void updateCharacterStream(String columnName,Reader reader,int length)throws SQLException{qNotSupported();}
+ public void updateObject(String columnName,Object x,int scale)throws SQLException{qNotSupported();}
+ public void updateObject(String columnName,Object x)throws SQLException{qNotSupported();}
+ public void insertRow()throws SQLException{qNotSupported();}
+ public void updateRow()throws SQLException{qNotSupported();}
+ public void deleteRow()throws SQLException{qNotSupported();}
+ public void refreshRow()throws SQLException{qNotSupported();}
+ public void cancelRowUpdates()throws SQLException{qNotSupported();}
+ public void moveToInsertRow()throws SQLException{qNotSupported();}
+ public void moveToCurrentRow()throws SQLException{qNotSupported();}
  public Statement getStatement()throws SQLException{return st;}
- public Object getObject(int i,Map map)throws SQLException{q();return null;}
- public Ref getRef(int i)throws SQLException{q();return null;}
- public Blob getBlob(int i)throws SQLException{q();return null;}
- public Clob getClob(int i)throws SQLException{q();return null;}
- public Array getArray(int i)throws SQLException{q();return null;}
- public Object getObject(String colName,Map map)throws SQLException{q();return null;}
- public Ref getRef(String colName)throws SQLException{q();return null;}
- public Blob getBlob(String colName)throws SQLException{q();return null;}
- public Clob getClob(String colName)throws SQLException{q();return null;}
- public Array getArray(String colName)throws SQLException{q();return null;}
- public Date getDate(int columnIndex,Calendar cal)throws SQLException{q();return null;}
- public Date getDate(String columnName,Calendar cal)throws SQLException{q();return null;}
- public Time getTime(int columnIndex,Calendar cal)throws SQLException{q();return null;}
- public Time getTime(String columnName,Calendar cal)throws SQLException{q();return null;}
- public Timestamp getTimestamp(int columnIndex,Calendar cal)throws SQLException{q();return null;}
- public Timestamp getTimestamp(String columnName,Calendar cal)throws SQLException{q();return null;}
+ public Object getObject(int i,Map map)throws SQLException{return qNotSupportedObj();}
+ public Ref getRef(int i)throws SQLException{return qNotSupportedObj();}
+ public Blob getBlob(int i)throws SQLException{return qNotSupportedObj();}
+ public Clob getClob(int i)throws SQLException{return qNotSupportedObj();}
+ public Array getArray(int i)throws SQLException{return qNotSupportedObj();}
+ public Object getObject(String colName,Map map)throws SQLException{return qNotSupportedObj();}
+ public Ref getRef(String colName)throws SQLException{return qNotSupportedObj();}
+ public Blob getBlob(String colName)throws SQLException{return qNotSupportedObj();}
+ public Clob getClob(String colName)throws SQLException{return qNotSupportedObj();}
+ public Array getArray(String colName)throws SQLException{return qNotSupportedObj();}
+ public Date getDate(int columnIndex,Calendar cal)throws SQLException{return qNotSupportedObj();}
+ public Date getDate(String columnName,Calendar cal)throws SQLException{return qNotSupportedObj();}
+ public Time getTime(int columnIndex,Calendar cal)throws SQLException{return qNotSupportedObj();}
+ public Time getTime(String columnName,Calendar cal)throws SQLException{return qNotSupportedObj();}
+ public Timestamp getTimestamp(int columnIndex,Calendar cal)throws SQLException{return qNotSupportedObj();}
+ public Timestamp getTimestamp(String columnName,Calendar cal)throws SQLException{return qNotSupportedObj();}
 //3
- public URL getURL(int columnIndex)throws SQLException{q();return null;}
- public URL getURL(String columnName)throws SQLException{q();return null;}
- public void updateRef(int columnIndex,Ref x)throws SQLException{q();}
- public void updateRef(String columnName,Ref x)throws SQLException{q();}
- public void updateBlob(int columnIndex,Blob x)throws SQLException{q();}
- public void updateBlob(String columnName,Blob x)throws SQLException{q();}
- public void updateClob(int columnIndex,Clob x)throws SQLException{q();}
- public void updateClob(String columnName,Clob x)throws SQLException{q();}
- public void updateArray(int columnIndex,Array x)throws SQLException{q();}
- public void updateArray(String columnName,Array x)throws SQLException{q();}
+ public URL getURL(int columnIndex)throws SQLException{return qNotSupportedObj();}
+ public URL getURL(String columnName)throws SQLException{return qNotSupportedObj();}
+ public void updateRef(int columnIndex,Ref x)throws SQLException{qNotSupported();}
+ public void updateRef(String columnName,Ref x)throws SQLException{qNotSupported();}
+ public void updateBlob(int columnIndex,Blob x)throws SQLException{qNotSupported();}
+ public void updateBlob(String columnName,Blob x)throws SQLException{qNotSupported();}
+ public void updateClob(int columnIndex,Clob x)throws SQLException{qNotSupported();}
+ public void updateClob(String columnName,Clob x)throws SQLException{qNotSupported();}
+ public void updateArray(int columnIndex,Array x)throws SQLException{qNotSupported();}
+ public void updateArray(String columnName,Array x)throws SQLException{qNotSupported();}
 //4
- public RowId getRowId(int i)throws SQLException{q();return null;}
- public RowId getRowId(String string)throws SQLException{q();return null;}
- public void updateRowId(int i, RowId rowid)throws SQLException{q();}
- public void updateRowId(String string, RowId rowid)throws SQLException{q();}
- public int getHoldability()throws SQLException{q();return 0;}
+ public RowId getRowId(int i)throws SQLException{return qNotSupportedObj();}
+ public RowId getRowId(String string)throws SQLException{return qNotSupportedObj();}
+ public void updateRowId(int i, RowId rowid)throws SQLException{qNotSupported();}
+ public void updateRowId(String string, RowId rowid)throws SQLException{qNotSupported();}
+ public int getHoldability()throws SQLException{qNotSupported();return 0;}
  public boolean isClosed()throws SQLException{return d==null;}
- public void updateNString(int i, String string)throws SQLException{q();}
- public void updateNString(String string, String string1)throws SQLException{q();}
- public void updateNClob(int i, NClob nclob)throws SQLException{q();}
- public void updateNClob(String string, NClob nclob)throws SQLException{q();}
- public NClob getNClob(int i)throws SQLException{q();return null;}
- public NClob getNClob(String string)throws SQLException{q();return null;}
- public SQLXML getSQLXML(int i)throws SQLException{q();return null;}
- public SQLXML getSQLXML(String string)throws SQLException{q();return null;}
- public void updateSQLXML(int i, SQLXML sqlxml)throws SQLException{q();}
- public void updateSQLXML(String string, SQLXML sqlxml)throws SQLException{q();}
- public String getNString(int i)throws SQLException{q();return null;}
- public String getNString(String string)throws SQLException{q();return null;}
- public Reader getNCharacterStream(int i)throws SQLException{q();return null;}
- public Reader getNCharacterStream(String string)throws SQLException{q();return null;}
- public void updateNCharacterStream(int i, Reader reader, long l)throws SQLException{q();}
- public void updateNCharacterStream(String string, Reader reader, long l)throws SQLException{q();}
- public void updateAsciiStream(int i, InputStream in, long l)throws SQLException{q();}
- public void updateBinaryStream(int i, InputStream in, long l)throws SQLException{q();}
- public void updateCharacterStream(int i, Reader reader, long l)throws SQLException{q();}
- public void updateAsciiStream(String string, InputStream in, long l)throws SQLException{q();}
- public void updateBinaryStream(String string, InputStream in, long l)throws SQLException{q();}
- public void updateCharacterStream(String string, Reader reader, long l)throws SQLException{q();}
- public void updateBlob(int i, InputStream in, long l)throws SQLException{q();}
- public void updateBlob(String string, InputStream in, long l)throws SQLException{q();}
- public void updateClob(int i, Reader reader, long l)throws SQLException{q();}
- public void updateClob(String string, Reader reader, long l)throws SQLException{q();}
- public void updateNClob(int i, Reader reader, long l)throws SQLException{q();}
- public void updateNClob(String string, Reader reader, long l)throws SQLException{q();}
- public void updateNCharacterStream(int i, Reader reader)throws SQLException{q();}
- public void updateNCharacterStream(String string, Reader reader)throws SQLException{q();}
- public void updateAsciiStream(int i, InputStream in)throws SQLException{q();}
- public void updateBinaryStream(int i, InputStream in)throws SQLException{q();}
- public void updateCharacterStream(int i, Reader reader)throws SQLException{q();}
- public void updateAsciiStream(String string, InputStream in)throws SQLException{q();}
- public void updateBinaryStream(String string, InputStream in)throws SQLException{q();}
- public void updateCharacterStream(String string, Reader reader)throws SQLException{q();}
- public void updateBlob(int i, InputStream in)throws SQLException{q();}
- public void updateBlob(String string, InputStream in)throws SQLException{q();}
- public void updateClob(int i, Reader reader)throws SQLException{q();}
- public void updateClob(String string, Reader reader)throws SQLException{q();}
- public void updateNClob(int i, Reader reader)throws SQLException{q();}
- public void updateNClob(String string, Reader reader)throws SQLException{q();}
- public <T> T unwrap(Class<T> type)throws SQLException{q();return null;}
- public boolean isWrapperFor(Class<?> type)throws SQLException{q();return false;}
+ public void updateNString(int i, String string)throws SQLException{qNotSupported();}
+ public void updateNString(String string, String string1)throws SQLException{qNotSupported();}
+ public void updateNClob(int i, NClob nclob)throws SQLException{qNotSupported();}
+ public void updateNClob(String string, NClob nclob)throws SQLException{qNotSupported();}
+ public NClob getNClob(int i)throws SQLException{return qNotSupportedObj();}
+ public NClob getNClob(String string)throws SQLException{return qNotSupportedObj();}
+ public SQLXML getSQLXML(int i)throws SQLException{return qNotSupportedObj();}
+ public SQLXML getSQLXML(String string)throws SQLException{return qNotSupportedObj();}
+ public void updateSQLXML(int i, SQLXML sqlxml)throws SQLException{qNotSupported();}
+ public void updateSQLXML(String string, SQLXML sqlxml)throws SQLException{qNotSupported();}
+ public String getNString(int i)throws SQLException{return qNotSupportedObj();}
+ public String getNString(String string)throws SQLException{return qNotSupportedObj();}
+ public Reader getNCharacterStream(int i)throws SQLException{return qNotSupportedObj();}
+ public Reader getNCharacterStream(String string)throws SQLException{return qNotSupportedObj();}
+ public void updateNCharacterStream(int i, Reader reader, long l)throws SQLException{qNotSupported();}
+ public void updateNCharacterStream(String string, Reader reader, long l)throws SQLException{qNotSupported();}
+ public void updateAsciiStream(int i, InputStream in, long l)throws SQLException{qNotSupported();}
+ public void updateBinaryStream(int i, InputStream in, long l)throws SQLException{qNotSupported();}
+ public void updateCharacterStream(int i, Reader reader, long l)throws SQLException{qNotSupported();}
+ public void updateAsciiStream(String string, InputStream in, long l)throws SQLException{qNotSupported();}
+ public void updateBinaryStream(String string, InputStream in, long l)throws SQLException{qNotSupported();}
+ public void updateCharacterStream(String string, Reader reader, long l)throws SQLException{qNotSupported();}
+ public void updateBlob(int i, InputStream in, long l)throws SQLException{qNotSupported();}
+ public void updateBlob(String string, InputStream in, long l)throws SQLException{qNotSupported();}
+ public void updateClob(int i, Reader reader, long l)throws SQLException{qNotSupported();}
+ public void updateClob(String string, Reader reader, long l)throws SQLException{qNotSupported();}
+ public void updateNClob(int i, Reader reader, long l)throws SQLException{qNotSupported();}
+ public void updateNClob(String string, Reader reader, long l)throws SQLException{qNotSupported();}
+ public void updateNCharacterStream(int i, Reader reader)throws SQLException{qNotSupported();}
+ public void updateNCharacterStream(String string, Reader reader)throws SQLException{qNotSupported();}
+ public void updateAsciiStream(int i, InputStream in)throws SQLException{qNotSupported();}
+ public void updateBinaryStream(int i, InputStream in)throws SQLException{qNotSupported();}
+ public void updateCharacterStream(int i, Reader reader)throws SQLException{qNotSupported();}
+ public void updateAsciiStream(String string, InputStream in)throws SQLException{qNotSupported();}
+ public void updateBinaryStream(String string, InputStream in)throws SQLException{qNotSupported();}
+ public void updateCharacterStream(String string, Reader reader)throws SQLException{qNotSupported();}
+ public void updateBlob(int i, InputStream in)throws SQLException{qNotSupported();}
+ public void updateBlob(String string, InputStream in)throws SQLException{qNotSupported();}
+ public void updateClob(int i, Reader reader)throws SQLException{qNotSupported();}
+ public void updateClob(String string, Reader reader)throws SQLException{qNotSupported();}
+ public void updateNClob(int i, Reader reader)throws SQLException{qNotSupported();}
+ public void updateNClob(String string, Reader reader)throws SQLException{qNotSupported();}
+ public <T> T unwrap(Class<T> type)throws SQLException{return qNotSupportedObj();}
+ public boolean isWrapperFor(Class<?> type)throws SQLException{return qNotSupportedBool();}
 //1.7
  public <T>T getObject(String parameterName,Class<T>t)throws SQLFeatureNotSupportedException{throw new SQLFeatureNotSupportedException("nyi");}
  public <T>T getObject(int columnIndex,Class<T>t)throws SQLFeatureNotSupportedException{throw new SQLFeatureNotSupportedException("nyi");}
@@ -808,8 +810,8 @@ public class rm implements ResultSetMetaData{
  public boolean isCurrency(int i)throws SQLException{return false;}
  public String getColumnClassName(int column)throws SQLException{q("getColumnClassName not supported");return null;}
 //4
- public <T> T unwrap(Class<T> type)throws SQLException{q();return null;}
- public boolean isWrapperFor(Class<?> type)throws SQLException{q();return false;}
+ public <T> T unwrap(Class<T> type)throws SQLException{return qNotSupportedObj();}
+ public boolean isWrapperFor(Class<?> type)throws SQLException{return qNotSupportedBool();}
 }
 
 public class dm implements DatabaseMetaData{private co co;public dm(co x){co=x;}
@@ -991,15 +993,15 @@ public class dm implements DatabaseMetaData{private co co;public dm(co x){co=x;}
  public boolean locatorsUpdateCopy()throws SQLException{return false;}
  public boolean supportsStatementPooling()throws SQLException{return false;}
 //4
- public RowIdLifetime getRowIdLifetime()throws SQLException{q();return null;}
- public ResultSet getSchemas(String string, String string1)throws SQLException{q();return null;}
- public boolean supportsStoredFunctionsUsingCallSyntax()throws SQLException{q();return false;}
- public boolean autoCommitFailureClosesAllResultSets()throws SQLException{q();return false;}
- public ResultSet getClientInfoProperties()throws SQLException{q();return null;}
- public ResultSet getFunctions(String string, String string1, String string2)throws SQLException{q();return null;}
- public ResultSet getFunctionColumns(String string, String string1, String string2, String string3)throws SQLException{q();return null;}
- public <T> T unwrap(Class<T> type)throws SQLException{q();return null;}
- public boolean isWrapperFor(Class<?> type)throws SQLException{q();return false;}
+ public RowIdLifetime getRowIdLifetime()throws SQLException{return qNotSupportedObj();}
+ public ResultSet getSchemas(String string, String string1)throws SQLException{return qNotSupportedObj();}
+ public boolean supportsStoredFunctionsUsingCallSyntax()throws SQLException{return qNotSupportedBool();}
+ public boolean autoCommitFailureClosesAllResultSets()throws SQLException{return qNotSupportedBool();}
+ public ResultSet getClientInfoProperties()throws SQLException{return qNotSupportedObj();}
+ public ResultSet getFunctions(String string, String string1, String string2)throws SQLException{return qNotSupportedObj();}
+ public ResultSet getFunctionColumns(String string, String string1, String string2, String string3)throws SQLException{return qNotSupportedObj();}
+ public <T> T unwrap(Class<T> type)throws SQLException{return qNotSupportedObj();}
+ public boolean isWrapperFor(Class<?> type)throws SQLException{return qNotSupportedBool();}
 //1.7
  public boolean generatedKeyAlwaysReturned(){return false;}
  public ResultSet getPseudoColumns(String catalog,String schemaPattern,String tableNamePattern,String columnNamePattern)throws SQLFeatureNotSupportedException{throw new SQLFeatureNotSupportedException("nyi");}
@@ -1010,30 +1012,30 @@ public class dm implements DatabaseMetaData{private co co;public dm(co x){co=x;}
 
 /*
 class ar implements Array{
- public String getBaseTypeName()throws SQLException{q();return null;}
- public int getBaseType()throws SQLException{q();return 0;}
- public Object getArray()throws SQLException{q();return null;}
- public Object getArray(Map map)throws SQLException{q();return null;}
- public Object getArray(long index,int count)throws SQLException{q();return null;}
- public Object getArray(long index,int count,Map map)throws SQLException{q();return null;}
- public ResultSet getResultSet()throws SQLException{q();return null;}
- public ResultSet getResultSet(Map map)throws SQLException{q();return null;}
- public ResultSet getResultSet(long index,int count)throws SQLException{q();return null;}
- public ResultSet getResultSet(long index,int count,Map map)throws SQLException{q();return null;}}
+ public String getBaseTypeName()throws SQLException{qNotSupported();return null;}
+ public int getBaseType()throws SQLException{qNotSupported();return 0;}
+ public Object getArray()throws SQLException{qNotSupported();return null;}
+ public Object getArray(Map map)throws SQLException{qNotSupported();return null;}
+ public Object getArray(long index,int count)throws SQLException{qNotSupported();return null;}
+ public Object getArray(long index,int count,Map map)throws SQLException{qNotSupported();return null;}
+ public ResultSet getResultSet()throws SQLException{qNotSupported();return null;}
+ public ResultSet getResultSet(Map map)throws SQLException{qNotSupported();return null;}
+ public ResultSet getResultSet(long index,int count)throws SQLException{qNotSupported();return null;}
+ public ResultSet getResultSet(long index,int count,Map map)throws SQLException{qNotSupported();return null;}}
 class bl implements Blob{
- public long length()throws SQLException{q();return 0L;}
- public byte[]getBytes(long pos,int length)throws SQLException{q();return null;}
- public InputStream getBinaryStream()throws SQLException{q();return null;}
- public long position(byte[]pattern,long start)throws SQLException{q();return 0L;}
- public long position(Blob pattern,long start)throws SQLException{q();return 0L;}}
+ public long length()throws SQLException{qNotSupported();return 0L;}
+ public byte[]getBytes(long pos,int length)throws SQLException{qNotSupported();return null;}
+ public InputStream getBinaryStream()throws SQLException{qNotSupported();return null;}
+ public long position(byte[]pattern,long start)throws SQLException{qNotSupported();return 0L;}
+ public long position(Blob pattern,long start)throws SQLException{qNotSupported();return 0L;}}
 class cl implements Clob{
- public long length()throws SQLException{q();return 0L;}
- public String getSubString(long pos,int length)throws SQLException{q();return null;}
- public Reader getCharacterStream()throws SQLException{q();return null;}
- public InputStream getAsciiStream()throws SQLException{q();return null;}
- public long position(String searchstr,long start)throws SQLException{q();return 0L;}
- public long position(Clob searchstr,long start)throws SQLException{q();return 0L;}}
-class re implements Ref{public String getBaseTypeName()throws SQLException{q();return null;}}
+ public long length()throws SQLException{qNotSupported();return 0L;}
+ public String getSubString(long pos,int length)throws SQLException{qNotSupported();return null;}
+ public Reader getCharacterStream()throws SQLException{qNotSupported();return null;}
+ public InputStream getAsciiStream()throws SQLException{qNotSupported();return null;}
+ public long position(String searchstr,long start)throws SQLException{qNotSupported();return 0L;}
+ public long position(Clob searchstr,long start)throws SQLException{qNotSupported();return 0L;}}
+class re implements Ref{public String getBaseTypeName()throws SQLException{qNotSupported();return null;}}
 // DriverPropertyInfo a=new DriverPropertyInfo("user",null),b=new DriverPropertyInfo("password",null),r[]=new DriverPropertyInfo[2];
 // a.required=b.required=false;r[0]=a;r[1]=b;for(int i=0;i<r.length;i++)r[i].value = p.getProperty(r[i].name);return r;}
 public ResultSet getBestRowIdentifier(String a,String b,String t,int scope,boolean nullable)throws SQLException
