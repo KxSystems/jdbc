@@ -5,22 +5,23 @@ import java.util.logging.Level;
 
 public class Example2 {
   private static final Logger LOGGER = Logger.getLogger(Example2.class.getName());
-
-  static final String JDBC_DRIVER="com.kx.jdbc";
-  static final String DB_URL="jdbc:q:localhost:5001";
-  static final String USER="username";
-  static final String PASS="password";
+  /**
+   * Example of connecting to kdb+, examples of using updates,queries and resultsets.
+   * @param args 3 optional args. 0 is optional connection string of host:port e.g. localhost:1234, 1 is optional username, 2 is optional password
+   */
   public static void main(String[] args){
     System.setProperty("java.util.logging.SimpleFormatter.format","[%1$tF %1$tT] [%4$-7s] %5$s %n");
     Connection conn=null;
     ResultSet rs=null;
     Statement stmt=null;
     PreparedStatement pstmt=null;
+    String url="jdbc:q:";
     try{
-      Class.forName(JDBC_DRIVER);
+      Class.forName("com.kx.jdbc");
 
-      LOGGER.info("Connecting to localhost:5001...");
-      conn=DriverManager.getConnection(DB_URL,USER,PASS);
+      url+=(args.length>0)?args[0]:"localhost:5001";
+      LOGGER.log(Level.INFO,"Connecting to {0}",url);
+      conn=DriverManager.getConnection(url,args.length>1?args[1]:"",args.length>2?args[2]:"");
 
       LOGGER.info("Creating table and function...");
       stmt=conn.createStatement();

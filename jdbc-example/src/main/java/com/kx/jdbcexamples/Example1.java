@@ -6,18 +6,21 @@ import java.util.logging.Level;
 
 public class Example1{
   private static final Logger LOGGER = Logger.getLogger(Example1.class.getName());
-  static final String DB_URL="jdbc:q:localhost:5001";
-  static final String USER="";
-  static final String PASS="";
+  /**
+   * Example of connecting to kdb+, creating/populating/quering table
+   * @param args 3 optional args. 0 is optional connection string of host:port e.g. localhost:1234, 1 is optional username, 2 is optional password
+   */
   public static void main(String[] args){
     System.setProperty("java.util.logging.SimpleFormatter.format","[%1$tF %1$tT] [%4$-7s] %5$s %n");
     Connection h = null;
     Statement st = null;
     PreparedStatement p = null;
+    String url="jdbc:q:";
     try{
+      url+=(args.length>0)?args[0]:"localhost:5001";
       Class.forName("com.kx.jdbc");  //loads the driver 
-      LOGGER.info("Connecting to localhost:5001");
-      h = DriverManager.getConnection(DB_URL,USER,PASS);
+      LOGGER.log(Level.INFO,"Connecting to {0}",url);
+      h = DriverManager.getConnection(url,args.length>1?args[1]:"",args.length>2?args[2]:"");
 
       LOGGER.info("Creating table 't'");
       st = h.createStatement();
