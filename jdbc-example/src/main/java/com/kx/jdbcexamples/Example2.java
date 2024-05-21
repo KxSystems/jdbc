@@ -3,10 +3,14 @@ import java.sql.*;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
+/**
+ * Example of connecting to kdb+, examples of using updates,queries and resultsets.
+ */
 public class Example2 {
   private static final Logger LOGGER = Logger.getLogger(Example2.class.getName());
+  private Example2(){/* default */}
   /**
-   * Example of connecting to kdb+, examples of using updates,queries and resultsets.
+   * To run example of connecting to kdb+, examples of using updates,queries and resultsets.
    * @param args 3 optional args. 0 is optional connection string of host:port e.g. localhost:1234, 1 is optional username, 2 is optional password
    */
   public static void main(String[] args){
