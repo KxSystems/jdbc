@@ -24,7 +24,11 @@ import java.util.Properties;
 import java.util.logging.Logger;
 import java.util.concurrent.Executor;
 
+/**
+ * JDBC driver for kdb+
+ */
 public class jdbc implements Driver{
+
 private static final String CLOSED="Closed";
 private static final int MAJOR_VERSION=2;
 private static final int MINOR_VERSION=0;
@@ -38,6 +42,12 @@ public DriverPropertyInfo[]getPropertyInfo(String s,Properties p)throws SQLExcep
 static{try{DriverManager.registerDriver(new jdbc());}catch(Exception e){O(e.getMessage());}}
 static final int[]SQLTYPE={0,16,0,0,-2,5,4,-5,7,8,0,12,0,0,91,93,0,0,0,92};
 static final String[]TYPE={"","boolean","","","byte","short","int","long","real","float","char","symbol","","month","date","timestamp","","minute","second","time"};
+
+/**
+ * default contructor for driver, not action taken
+ */
+public jdbc(){/* default contructor */}
+
 static int find(String[]x,String s){
   int i=0;
   while(i<x.length&&!s.equals(x[i]))++i;
@@ -54,9 +64,19 @@ static boolean qNotSupportedBool()throws SQLException{throw new SQLFeatureNotSup
 static <T> T qNotSupportedObj()throws SQLException{throw new SQLFeatureNotSupportedException("nyi");}
 static void q(Exception e)throws SQLException{throw new SQLException(e.getMessage());}
 
+/**
+ * A connection (session) with kdb+. SQL statements are executed and results are returned within the context of a connection
+ */
 public class co implements Connection{
  private boolean streaming;
  private c c;
+ /**
+  * Connect to kdb+
+  * @param s connection url e.g. localhost:5001
+  * @param u username 
+  * @param p password
+  * @throws SQLException issue connecting to kdb+
+  */
  public co(String s,Object u,Object p)throws SQLException{
    int idx=s.indexOf(":");
    try{
@@ -66,6 +86,11 @@ public class co implements Connection{
     q(e);
    }
  }
+ /**
+  * Blocks until further response messages received from kdb+
+  * @return deserialised data from kdb+ or null if no data present
+  * @throws SQLException issue receiving msg (e.g. connection lost)
+  */
  public Object getMoreRows()throws SQLException{
    if(isClosed())q(CLOSED);
    if(streaming){
@@ -85,6 +110,15 @@ public class co implements Connection{
    }
    return null;
  }
+ /**
+  * Execute code on kdb+
+  * @param s code to run
+  * @param p args (null for no args)
+  * @param maxRows max rows for query
+  * @param fetchSize fetch size for returned data
+  * @return empty array if issue, otherwise first element if whether streaming (more data available), second element is deserialised data returned
+  * @throws SQLException error retrieving data
+  */
  public Object[] ex(String s,Object[]p,int maxRows, int fetchSize)throws SQLException{
    if(isClosed())q(CLOSED);
    if(streaming)
@@ -109,6 +143,12 @@ public class co implements Connection{
    }
    return new Object[0];
  }
+ /**
+  * Run a sync query against kdb+
+  * @param s code to execute
+  * @return result of query (or null on execption)
+  * @throws SQLException if issue with executing s (invalid or connection lost)
+  */
  public rs qx(String s)throws SQLException{
    if(isClosed())q(CLOSED);
    try{
@@ -124,6 +164,13 @@ public class co implements Connection{
    }
    return null;
  }
+ /**
+  * Run a sync query against kdb+
+  * @param s q code to execute
+  * @param x argument to s
+  * @return result of query (or null on execption)
+  * @throws SQLException if issue with executing s (invalid or connection lost)
+  */
  public rs qx(String s,Object x)throws SQLException{
    if(isClosed())q(CLOSED);
    try{
@@ -216,13 +263,23 @@ public class co implements Connection{
  public String getSchema(){return null;}
 }
 
+/**
+ * The object used for executing a static SQL statement and returning the results it produces
+ */
 public class st implements Statement{
  private co co;
  private ResultSet resultSet;
  private int maxRows=0;
  private int timeOut;
  private int fetchSize=0;
+ /**
+  * Default empty args
+  */
  protected Object[]p={};
+ /**
+  * Provide connection details of server to which sql statements should be executed
+  * @param x connection to kdb+
+  */
  public st(co x){co=x;}
  public int executeUpdate(String s)throws SQLException{
    if(resultSet!=null)
@@ -315,8 +372,16 @@ public class st implements Statement{
  public boolean isCloseOnCompletion(){return _closeOnCompletion;}
 }
 
+/**
+ * An object that represents a precompiled SQL statement
+ */
 public class ps extends st implements PreparedStatement{
  private String s;
+ /**
+  * Provide connection details of server to which statement should be run
+  * @param co connection to kdb+
+  * @param x statement to run
+  */
  public ps(co co,String x){super(co);s=x;}
  public ResultSet executeQuery()throws SQLException{return executeQuery(s);}
  public int executeUpdate()throws SQLException{return executeUpdate(s);}
@@ -391,7 +456,16 @@ public class ps extends st implements PreparedStatement{
  public void setNClob(int i,Reader reader)throws SQLException{qNotSupported();}
 }
 
+/**
+ * kdb+ stored procedures not supported. Methods can throw exception to indicate not support
+ * or return default values.
+ */
 public class cs extends ps implements CallableStatement{
+   /**
+  * Provide connection details of server to stored procedure would be executed
+  * @param c connection to kdb+
+  * @param s statement to run
+  */
  public cs(co c,String s){super(c,s);}
  public void registerOutParameter(int i,int sqlType)throws SQLException{ /* not supported */ }
  public void registerOutParameter(int i,int sqlType,int scale)throws SQLException{ /* not supported */ }
@@ -512,6 +586,9 @@ public class cs extends ps implements CallableStatement{
  public <T>T getObject(int parameterIndex,Class<T>t)throws SQLFeatureNotSupportedException{throw new SQLFeatureNotSupportedException("nyi");} 
 }
 
+/**
+ * A table of data representing a database result set, which is usually generated by executing a statement that queries kdb+.
+ */
 public class rs implements ResultSet{
  private st st;
  private String[]f;
@@ -522,6 +599,12 @@ public class rs implements ResultSet{
  private int r; // cursor position
  private int n; // number of rows in the current chunk
  private int offset; // first absolute row number for this chunk
+ /**
+  * Result of executing code on kdb+
+  * @param s statement executed (can be null for queries)
+  * @param nrsTuple first element is whether streaming, followed by deserialised data returned
+  * @throws SQLException issue with data provided
+  */
  public rs(st s,Object[]nrsTuple)throws SQLException{
    st=s;
    init(nrsTuple[1]);
@@ -784,9 +867,17 @@ public class rs implements ResultSet{
  public <T>T getObject(int columnIndex,Class<T>t)throws SQLFeatureNotSupportedException{throw new SQLFeatureNotSupportedException("nyi");}
 }
 
+/**
+ * Used to get information about the types and properties of the columns in a ResultSet object
+ */
 public class rm implements ResultSetMetaData{
  private String[]f;
  private Object[]d;
+ /**
+  * Create metadata info from data returned in ResultSet
+  * @param x column names
+  * @param y column values
+  */
  public rm(String[]x,Object[]y){f=x;d=y;}
  public int getColumnCount()throws SQLException{return f.length;}
  public String getColumnName(int i)throws SQLException{return f[i-1];}
@@ -814,7 +905,16 @@ public class rm implements ResultSetMetaData{
  public boolean isWrapperFor(Class<?> type)throws SQLException{return qNotSupportedBool();}
 }
 
-public class dm implements DatabaseMetaData{private co co;public dm(co x){co=x;}
+/**
+ * Information about kdb+ server capabilities
+ */
+public class dm implements DatabaseMetaData{
+ private co co;
+ /**
+  * Provide connection details of server to which meta data should be retrieved
+  * @param x connection to kdb+
+  */
+ public dm(co x){co=x;}
  public ResultSet getCatalogs()throws SQLException{return co.qx("([]TABLE_CAT:`symbol$())");}
  public ResultSet getSchemas()throws SQLException{return co.qx("([]TABLE_SCHEM:`symbol$())");}
  public ResultSet getTableTypes()throws SQLException{return co.qx("([]TABLE_TYPE:`TABLE`VIEW)");}
