@@ -52,7 +52,7 @@ public class Example1{
     finally{
       try{if(p!=null)p.close();}catch(Exception e){/*ignored*/}
       try{if(st!=null)st.close();}catch(Exception e){/*ignored*/}
-      try{h.close();}catch(Exception e){/*ignored*/}
+      try{if(h!=null)h.close();}catch(Exception e){/*ignored*/}
     }
   } 
 }
