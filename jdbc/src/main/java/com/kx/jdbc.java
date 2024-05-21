@@ -19,6 +19,7 @@ import java.math.*;
 import java.sql.*;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -222,7 +223,7 @@ public class co implements Connection{
  public Statement createStatement(int resultSetType,int resultSetConcurrency)throws SQLException{return new st(this);}
  public PreparedStatement prepareStatement(String s,int resultSetType,int resultSetConcurrency)throws SQLException{return new ps(this,s);}
  public CallableStatement prepareCall(String s,int resultSetType,int resultSetConcurrency)throws SQLException{return new cs(this,s);}
- public Map<String, Class<?>> getTypeMap()throws SQLException{return null;}
+ public Map<String, Class<?>> getTypeMap()throws SQLException{return Collections.emptyMap();}
  public void setTypeMap(Map map)throws SQLException{ /* not supported */ }
 //3
  public void setHoldability(int holdability)throws SQLException{h=holdability;}
@@ -386,7 +387,7 @@ public class ps extends st implements PreparedStatement{
  public ResultSet executeQuery()throws SQLException{return executeQuery(s);}
  public int executeUpdate()throws SQLException{return executeUpdate(s);}
  public boolean execute()throws SQLException{return execute(s);}
- public void clearParameters()throws SQLException{try{for(int i=0;i<c.n(p);)p[i++]=null;}catch(UnsupportedEncodingException ex){throw new SQLException(ex);}}
+ public void clearParameters()throws SQLException{try{for(int i=0;i<c.n(p);i++)p[i]=null;}catch(UnsupportedEncodingException ex){throw new SQLException(ex);}}
  public void setObject(int i,Object x)throws SQLException{
   int n;
   try{n=c.n(p);
@@ -418,6 +419,9 @@ public class ps extends st implements PreparedStatement{
  public void setBytes(int i,byte[] x)throws SQLException{qNotSupported();}
  public void setBigDecimal(int i,BigDecimal x)throws SQLException{qNotSupported();}
  public void setAsciiStream(int i,InputStream x,int length)throws SQLException{qNotSupported();}
+ /**
+  * @deprecated depreciated in PreparedStatement
+  */
  @Deprecated
  public void setUnicodeStream(int i,InputStream x,int length)throws SQLException{qNotSupported();}
  public void setBinaryStream(int i,InputStream x,int length)throws SQLException{qNotSupported();}
@@ -478,12 +482,15 @@ public class cs extends ps implements CallableStatement{
  public long getLong(int i)throws SQLException{return 0;}
  public float getFloat(int i)throws SQLException{return(float)0.0;}
  public double getDouble(int i)throws SQLException{return 0.0;}
+ /**
+  * @deprecated depreciated in CallableStatement
+  */
  @Deprecated
  public BigDecimal getBigDecimal(int i,int scale)throws SQLException{return null;}
  public Date getDate(int i)throws SQLException{return null;}
  public Time getTime(int i)throws SQLException{return null;}
  public Timestamp getTimestamp(int i)throws SQLException{return null;}
- public byte[]getBytes(int i)throws SQLException{return null;}
+ public byte[]getBytes(int i)throws SQLException{return new byte[0];}
  public Object getObject(int i)throws SQLException{return null;}
  public BigDecimal getBigDecimal(int parameterIndex)throws SQLException{return qNotSupportedObj();}
  public Object getObject(int i,Map map)throws SQLException{return qNotSupportedObj();}
@@ -533,7 +540,7 @@ public class cs extends ps implements CallableStatement{
  public long getLong(String parameterName)throws SQLException{return 0;}
  public float getFloat(String parameterName)throws SQLException{return 0;}
  public double getDouble(String parameterName)throws SQLException{return 0;}
- public byte[]getBytes(String parameterName)throws SQLException{return null;}
+ public byte[]getBytes(String parameterName)throws SQLException{return new byte[0];}
  public Date getDate(String parameterName)throws SQLException{return null;}
  public Time getTime(String parameterName)throws SQLException{return null;}
  public Timestamp getTimestamp(String parameterName)throws SQLException{return null;}
@@ -652,9 +659,15 @@ public class rs implements ResultSet{
  public Time getTime(int i)throws SQLException{return(Time)getObject(i);}
  public Timestamp getTimestamp(int i)throws SQLException{Object obj=getObject(i);return obj instanceof java.util.Date?new Timestamp(((java.util.Date)obj).getTime()):(Timestamp)obj;}
  public byte[]getBytes(int i)throws SQLException{return qNotSupportedObj();}
+ /**
+  * @deprecated depreciated in ResultSet
+  */
  @Deprecated
  public BigDecimal getBigDecimal(int i,int scale)throws SQLException{return qNotSupportedObj();}
  public InputStream getAsciiStream(int i)throws SQLException{return qNotSupportedObj();}
+ /**
+  * @deprecated depreciated in ResultSet
+  */
  @Deprecated
  public InputStream getUnicodeStream(int i)throws SQLException{return qNotSupportedObj();}
  public InputStream getBinaryStream(int i)throws SQLException{return qNotSupportedObj();}
@@ -671,9 +684,15 @@ public class rs implements ResultSet{
  public Time getTime(String s)throws SQLException{return getTime(findColumn(s));}
  public Timestamp getTimestamp(String s)throws SQLException{return getTimestamp(findColumn(s));}
  public byte[] getBytes(String s)throws SQLException{return getBytes(findColumn(s));}
+ /**
+  * @deprecated depreciated in ResultSet
+  */
  @Deprecated
  public BigDecimal getBigDecimal(String s,int scale)throws SQLException{return getBigDecimal(findColumn(s),scale);}
  public InputStream getAsciiStream(String s)throws SQLException{return getAsciiStream(findColumn(s));}
+ /**
+  * @deprecated depreciated in ResultSet
+  */
  @Deprecated
  public InputStream getUnicodeStream(String s)throws SQLException{return getUnicodeStream(findColumn(s));}
  public InputStream getBinaryStream(String s)throws SQLException{return getBinaryStream(findColumn(s));}
@@ -918,30 +937,65 @@ public class dm implements DatabaseMetaData{
  public ResultSet getCatalogs()throws SQLException{return co.qx("([]TABLE_CAT:`symbol$())");}
  public ResultSet getSchemas()throws SQLException{return co.qx("([]TABLE_SCHEM:`symbol$())");}
  public ResultSet getTableTypes()throws SQLException{return co.qx("([]TABLE_TYPE:`TABLE`VIEW)");}
- public ResultSet getTables(String a,String b,String t,String[] x)throws SQLException{return co.qx(
-  "raze{([]TABLE_CAT:`;TABLE_SCHEM:`;TABLE_NAME:system string`a`b x=`VIEW;TABLE_TYPE:x)}each",x);}
- public ResultSet getTypeInfo()throws SQLException{return co.qx(
-  "`DATA_TYPE xasc([]TYPE_NAME:`boolean`byte`short`int`long`real`float`symbol`date`time`timestamp;DATA_TYPE:16 -2 5 4 -5 7 8 12 91 92 93i;PRECISION:11i;LITERAL_PREFIX:`;LITERAL_SUFFIX:`;CREATE_PARAMS:`;NULLABLE:1h;CASE_SENSITIVE:1b;SEARCHABLE:1h;UNSIGNED_ATTRIBUTE:0b;FIXED_PREC_SCALE:0b;AUTO_INCREMENT:0b;LOCAL_TYPE_NAME:`;MINIMUM_SCALE:0h;MAXIMUM_SCALE:0h;SQL_DATA_TYPE:0i;SQL_DATETIME_SUB:0i;NUM_PREC_RADIX:10i)");}
- public ResultSet getColumns(String a,String b,String t,String c)throws SQLException{if(t.startsWith("%"))t="";return co.qx(
-  "select TABLE_CAT:`,TABLE_SCHEM:`,TABLE_NAME:n,COLUMN_NAME:c,DATA_TYPE:0i,TYPE_NAME:`int$t,COLUMN_SIZE:2000000000i,BUFFER_LENGTH:0i,DECIMAL_DIGITS:16i,NUM_PREC_RADIX:10i,NULLABLE:1i,REMARKS:`,COLUMN_DEF:`,SQL_DATA_TYPE:0i,SQL_DATETIME_SUB:0i,CHAR_OCTET_LENGTH:2000000000i,ORDINAL_POSITION:`int$1+til count n,NULLABLE:`YES from .Q.nct`"+t);}
- public ResultSet getPrimaryKeys(String a,String b,String t)throws SQLException{q("getPrimaryKeys not supported");return co.qx(
-  "");} //"q)([]TABLE_CAT:'',TABLE_SCHEM:'',TABLE_NAME:'"+t+"',COLUMN_NAME:key "+t+",KEY_SEQ:1+asc count key "+t+",PK_NAME:'')");}
- public ResultSet getImportedKeys(String a,String b,String t)throws SQLException{q("getImportedKeys not supported");return co.qx(
-  "");} //"q)select PKTABLE_CAT:'',PKTABLE_SCHEM:'',PKTABLE_NAME:x,PKCOLUMN_NAME:first each key each x,FKTABLE_CAT:'',FKTABLE_SCHEM:'',FKTABLE_NAME:'"+t+"',FKCOLUMN_NAME:y,KEY_SEQ:1,UPDATE_RULE:1,DELETE_RULE:0,FK_NAME:'',PK_NAME:'',DEFERRABILITY:0 from('x','y')vars fkey "+t);}
- public ResultSet getProcedures(String a,String b,String p)throws SQLException{q("getProcedures not supported");return co.qx(
-  "");} // "q)([]PROCEDURE_CAT:'',PROCEDURE_SCHEM:'',PROCEDURE_NAME:varchar(),r0:0,r1:0,r2:0,REMARKS:'',PROCEDURE_TYPE:0)");}
- public ResultSet getExportedKeys(String a,String b,String t)throws SQLException{q("getExportedKeys not supported");return null;}
- public ResultSet getCrossReference(String pa,String pb,String pt,String fa,String fb,String ft)throws SQLException{q("getCrossReference not supported");return null;}
- public ResultSet getIndexInfo(String a,String b,String t,boolean unique,boolean approximate)throws SQLException{q("getIndexInfo not supported");return null;}
- public ResultSet getProcedureColumns(String a,String b,String p,String c)throws SQLException{q("getProcedureColumns not supported");return null;}
+ public ResultSet getTables(String a,String b,String t,String[] x)throws SQLException{
+  return co.qx("raze{([]TABLE_CAT:`;TABLE_SCHEM:`;TABLE_NAME:system string`a`b x=`VIEW;TABLE_TYPE:x)}each",x);
+ }
+ public ResultSet getTypeInfo()throws SQLException{
+  return co.qx("`DATA_TYPE xasc([]TYPE_NAME:`boolean`byte`short`int`long`real`float`symbol`date`time`timestamp;DATA_TYPE:16 -2 5 4 -5 7 8 12 91 92 93i;PRECISION:11i;LITERAL_PREFIX:`;LITERAL_SUFFIX:`;CREATE_PARAMS:`;NULLABLE:1h;CASE_SENSITIVE:1b;SEARCHABLE:1h;UNSIGNED_ATTRIBUTE:0b;FIXED_PREC_SCALE:0b;AUTO_INCREMENT:0b;LOCAL_TYPE_NAME:`;MINIMUM_SCALE:0h;MAXIMUM_SCALE:0h;SQL_DATA_TYPE:0i;SQL_DATETIME_SUB:0i;NUM_PREC_RADIX:10i)");
+ }
+ public ResultSet getColumns(String a,String b,String t,String c)throws SQLException{
+  if(t.startsWith("%"))
+    t="";
+  return co.qx("select TABLE_CAT:`,TABLE_SCHEM:`,TABLE_NAME:n,COLUMN_NAME:c,DATA_TYPE:0i,TYPE_NAME:`int$t,COLUMN_SIZE:2000000000i,BUFFER_LENGTH:0i,DECIMAL_DIGITS:16i,NUM_PREC_RADIX:10i,NULLABLE:1i,REMARKS:`,COLUMN_DEF:`,SQL_DATA_TYPE:0i,SQL_DATETIME_SUB:0i,CHAR_OCTET_LENGTH:2000000000i,ORDINAL_POSITION:`int$1+til count n,NULLABLE:`YES from .Q.nct`"+t);
+ }
+ public ResultSet getPrimaryKeys(String a,String b,String t)throws SQLException{
+  q("getPrimaryKeys not supported");
+  return co.qx("");
+ } //"q)([]TABLE_CAT:'',TABLE_SCHEM:'',TABLE_NAME:'"+t+"',COLUMN_NAME:key "+t+",KEY_SEQ:1+asc count key "+t+",PK_NAME:'')");}
+ public ResultSet getImportedKeys(String a,String b,String t)throws SQLException{
+  q("getImportedKeys not supported");
+  return co.qx("");
+ } //"q)select PKTABLE_CAT:'',PKTABLE_SCHEM:'',PKTABLE_NAME:x,PKCOLUMN_NAME:first each key each x,FKTABLE_CAT:'',FKTABLE_SCHEM:'',FKTABLE_NAME:'"+t+"',FKCOLUMN_NAME:y,KEY_SEQ:1,UPDATE_RULE:1,DELETE_RULE:0,FK_NAME:'',PK_NAME:'',DEFERRABILITY:0 from('x','y')vars fkey "+t);}
+ public ResultSet getProcedures(String a,String b,String p)throws SQLException{
+  q("getProcedures not supported");
+  return co.qx("");
+ } // "q)([]PROCEDURE_CAT:'',PROCEDURE_SCHEM:'',PROCEDURE_NAME:varchar(),r0:0,r1:0,r2:0,REMARKS:'',PROCEDURE_TYPE:0)");}
+ public ResultSet getExportedKeys(String a,String b,String t)throws SQLException{
+  q("getExportedKeys not supported");
+  return null;
+ }
+ public ResultSet getCrossReference(String pa,String pb,String pt,String fa,String fb,String ft)throws SQLException{
+  q("getCrossReference not supported");
+  return null;
+ }
+ public ResultSet getIndexInfo(String a,String b,String t,boolean unique,boolean approximate)throws SQLException{
+  q("getIndexInfo not supported");
+  return null;
+ }
+ public ResultSet getProcedureColumns(String a,String b,String p,String c)throws SQLException{
+  q("getProcedureColumns not supported");
+  return null;
+ }
 // PROCEDURE_CAT PROCEDURE_SCHEM PROCEDURE_NAME ...
- public ResultSet getColumnPrivileges(String a,String b,String table,String columnNamePattern)throws SQLException{q("getColumnPrivileges not supported");return null;}
+ public ResultSet getColumnPrivileges(String a,String b,String table,String columnNamePattern)throws SQLException{
+  q("getColumnPrivileges not supported");
+  return null;
+ }
 //select TABLE_CAT TABLE_SCHEM TABLE_NAME COLUMN_NAME GRANTOR GRANTEE PRIVILEGE IS_GRANTABLE ordered by COLUMN_NAME and PRIVILEGE.
- public ResultSet getTablePrivileges(String a,String b,String t)throws SQLException{q("getTablePrivileges not supported");return null;}
+ public ResultSet getTablePrivileges(String a,String b,String t)throws SQLException{
+  q("getTablePrivileges not supported");
+  return null;
+ }
 //select TABLE_CAT TABLE_SCHEM TABLE_NAME GRANTOR GRANTEE PRIVILEGE IS_GRANTABLE ordered by TABLE_SCHEM,TABLE_NAME,and PRIVILEGE.
- public ResultSet getBestRowIdentifier(String a,String b,String t,int scope,boolean nullable)throws SQLException{q("getBestRowIdentifier not supported");return null;}
+ public ResultSet getBestRowIdentifier(String a,String b,String t,int scope,boolean nullable)throws SQLException{
+  q("getBestRowIdentifier not supported");
+  return null;
+ }
 //select SCOPE COLUMN_NAME DATA_TYPE TYPE_NAME COLUMN_SIZE DECIMAL_DIGITS PSEUDO_COLUMN ordered by SCOPE
- public ResultSet getVersionColumns(String a,String b,String t)throws SQLException{q("getVersionColumns not supported");return null;}
+ public ResultSet getVersionColumns(String a,String b,String t)throws SQLException{
+  q("getVersionColumns not supported");
+  return null;
+ }
 //select SCOPE COLUMN_NAME DATA_TYPE TYPE_NAME COLUMN_SIZE DECIMAL_DIGITS PSEUDO_COLUMN ordered by SCOPE
  public boolean allProceduresAreCallable()throws SQLException{return true;}
  public boolean allTablesAreSelectable()throws SQLException{return true;}
