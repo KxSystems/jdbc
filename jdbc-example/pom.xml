@@ -6,13 +6,13 @@
 
   <groupId>com.kx</groupId>
   <artifactId>jdbc-example</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <parent>
     <groupId>com.kx</groupId>
     <artifactId>JdbcModules</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
   </parent>
 
   <name>JDBC_KDB_EXAMPLE</name>
@@ -46,7 +46,7 @@
    <dependency>
       <groupId>com.kx</groupId>
       <artifactId>jdbc</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

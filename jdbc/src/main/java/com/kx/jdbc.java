@@ -38,7 +38,12 @@ public int getMajorVersion(){return MAJOR_VERSION;}
 public int getMinorVersion(){return MINOR_VERSION;}
 public boolean jdbcCompliant(){return false;}
 public boolean acceptsURL(String s){return s.startsWith("jdbc:q:");}
-public Connection connect(String s,Properties p)throws SQLException{return!acceptsURL(s)?null:new co(s.substring(7),p!=null?p.get("user"):p,p!=null?p.get("password"):p);}
+public Connection connect(String s,Properties p)throws SQLException{
+  if(!acceptsURL(s))
+    return null;
+  return new co(s.substring(7),p.get("user"),p.get("password"),p.get("ssl"));
+}
+
 public DriverPropertyInfo[]getPropertyInfo(String s,Properties p)throws SQLException{return new DriverPropertyInfo[0];}
 static{try{DriverManager.registerDriver(new jdbc());}catch(Exception e){O(e.getMessage());}}
 static final int[]SQLTYPE={0,16,0,0,-2,5,4,-5,7,8,0,12,0,0,91,93,0,0,0,92};
@@ -78,10 +83,10 @@ public class co implements Connection{
   * @param p password
   * @throws SQLException issue connecting to kdb+
   */
- public co(String s,Object u,Object p)throws SQLException{
+ public co(String s,Object u,Object p,Object ssl)throws SQLException{
    int idx=s.indexOf(":");
    try{
-    c=new c(s.substring(0,idx),Integer.parseInt(s.substring(idx+1)),u==null?"":(String)u+":"+(String)p);
+    c=new c(s.substring(0,idx),Integer.parseInt(s.substring(idx+1)),u==null?"":(String)u+":"+(String)p,ssl!=null&&"true".equals(ssl));
     c.setCollectResponseAsync(true);
    }catch(Exception e){
     q(e);

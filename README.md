@@ -141,3 +141,19 @@ c2.close();
 System.out.println("num active "+connectionPool.getNumActive());
 System.out.println("num idle "+connectionPool.getNumIdle());
 ```
+
+## SSL/TLS connections
+
+Connections can be encrypted via SSL/TLS by setting the connection property `ssl` to the string value `true`.
+For example:
+
+```java
+Properties props = new Properties();
+props.setProperty("user", "my_user");
+props.setProperty("password", "my_password");
+props.setProperty("ssl", "true");
+h = DriverManager.getConnection("jdbc:q:localhost:5001",props);
+```
+
+The connection may require certificates/keys to registered via JSSE (as referenced [here](https://github.com/KxSystems/javakdb/tree/master/docs#ssltls))
+and the kdb+ server to be configured to accept SSL/TLS connections.
